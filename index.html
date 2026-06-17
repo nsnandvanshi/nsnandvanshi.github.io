@@ -1,0 +1,41 @@
+---
+layout: default
+title: Books
+---
+
+<section class="page-header">
+  <div class="wrap">
+    <span class="section-label">Bibliography</span>
+    <h1>Books</h1>
+    <p>Eight stories about trust, healing, and the quiet kind of love that lasts. Find each one wherever you like to read.</p>
+  </div>
+</section>
+
+<section class="books">
+  <div class="wrap">
+    {% assign books = site.books | sort: 'order' %}
+    {% if books.size > 0 %}
+      <div class="books-grid">
+        {% for book in books %}
+          <a class="book-card" href="{{ book.url | relative_url }}">
+            <div class="book-cover">
+              {% if book.cover %}
+                <img src="{{ book.cover | relative_url }}" alt="{{ book.title }} cover">
+              {% else %}
+                <span class="book-cover-placeholder">{{ book.title }}</span>
+              {% endif %}
+            </div>
+            <div class="book-card-body">
+              <h3>{{ book.title }}</h3>
+              <p>{{ book.description }}</p>
+            </div>
+          </a>
+        {% endfor %}
+      </div>
+    {% else %}
+      <div class="empty-state">
+        Books will appear here as soon as you add them. See <code>HOW-TO-ADD-A-BOOK.md</code> in the project for the simple template — just copy, fill in the blanks, save.
+      </div>
+    {% endif %}
+  </div>
+</section>
