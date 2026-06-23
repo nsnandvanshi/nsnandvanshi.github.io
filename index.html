@@ -1,0 +1,112 @@
+---
+layout: default
+title: Home
+---
+
+<section class="hero">
+  <div class="wrap">
+    <div>
+      <span class="hero-eyebrow">Author of contemporary fiction &amp; romance</span>
+      <h1>Real love and deep healing don't demand to be loud or perfect — <em>they just need to be true.</em></h1>
+      <p class="hero-sub">I'm N.S. Nandvanshi. I write stories that make a home for the reader within the pages.</p>
+    </div>
+    <div class="hero-portrait">
+      <img src="{{ '/assets/images/logo.jpg' | relative_url }}" alt="N.S. Nandvanshi">
+    </div>
+  </div>
+</section>
+
+{% include divider.html %}
+
+<section class="about">
+  <div class="wrap">
+    <span class="section-label">About</span>
+    <div class="about-body">
+      <p>Writing is not just a profession for me — it is a way to explore the deep, often unspoken complexities of human emotion, love, and resilience.</p>
+      <p>To date, I have published eight books — a milestone that represents countless late nights, deep reflections, and an unwavering commitment to the craft of storytelling. My work spans contemporary fiction and heartwarming romance, focusing on the quiet, powerful moments that connect us all: the intense and gripping dynamics of trust and obsession, the gentle magic of unexpected connections, the beauty of a quiet, enduring love.</p>
+      <p>I invite you to step into worlds filled with tender feelings, hopeful beginnings, and characters who face their darkest scars to find their brightest futures. I write for you, and I hope my words continue to leave you smiling and believing in the quiet power of the heart.</p>
+    </div>
+  </div>
+</section>
+
+{% include divider.html %}
+
+<section class="books">
+  <div class="wrap">
+    <span class="section-label">Bibliography</span>
+    <h2 class="section-heading">Books</h2>
+
+    {% assign books = site.books | sort: 'order' %}
+    {% if books.size > 0 %}
+      <div class="books-grid">
+        {% for book in books limit: 4 %}
+          <a class="book-card" href="{{ book.url | relative_url }}">
+            <div class="book-cover">
+              {% if book.cover %}
+                <img src="{{ book.cover | relative_url }}" alt="{{ book.title }} cover">
+              {% else %}
+                <span class="book-cover-placeholder">{{ book.title }}</span>
+              {% endif %}
+            </div>
+            <div class="book-card-body">
+              <h3>{{ book.title }}</h3>
+              <p>{{ book.description }}</p>
+            </div>
+          </a>
+        {% endfor %}
+      </div>
+      <p style="margin-top: 1.5rem;"><a href="{{ '/books/' | relative_url }}">See all books &rarr;</a></p>
+    {% else %}
+      <div class="empty-state">
+        Books will appear here as soon as you add them. See <code>HOW-TO-ADD-A-BOOK.md</code> for the simple template.
+      </div>
+    {% endif %}
+  </div>
+</section>
+
+{% include divider.html %}
+
+<section class="blog-section">
+  <div class="wrap">
+    <span class="section-label">Writing</span>
+    <h2 class="section-heading">From the Blog</h2>
+
+    {% if site.posts.size > 0 %}
+      <div class="post-list">
+        {% for post in site.posts limit: 3 %}
+          <article class="post-row">
+            <span class="post-date">{{ post.date | date: "%b %-d, %Y" }}</span>
+            <div>
+              <h3><a href="{{ post.url | relative_url }}">{{ post.title }}</a></h3>
+              <p class="post-excerpt">{{ post.excerpt | strip_html | truncatewords: 28 }}</p>
+            </div>
+          </article>
+        {% endfor %}
+      </div>
+      <p style="margin-top: 1.5rem;"><a href="{{ '/blog/' | relative_url }}">Read all posts &rarr;</a></p>
+    {% else %}
+      <div class="empty-state">
+        No posts yet. See <code>HOW-TO-WRITE-A-BLOG-POST.md</code> to publish your first one.
+      </div>
+    {% endif %}
+  </div>
+</section>
+
+{% include divider.html %}
+
+<section class="newsletter" id="newsletter">
+  <div class="wrap">
+    <div class="newsletter-card">
+      <div>
+        <h2>Stay close to the story</h2>
+        <p>Join the list for new releases, quiet updates, and the occasional behind-the-pages note. No spam, ever.</p>
+      </div>
+      <form class="signup-form" action="https://formspree.io/f/{{ site.formspree_id }}" method="POST">
+        <input type="text" name="name" placeholder="Your name" required>
+        <input type="email" name="email" placeholder="Your email" required>
+        <button type="submit">Join the list</button>
+        <span class="form-note">By joining, you'll hear from N.S. Nandvanshi by email. Unsubscribe anytime.</span>
+      </form>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,15 @@
+---
+layout: default
+---
+<section class="post-single">
+  <div class="wrap">
+    <a class="back-link" href="{{ '/blog/' | relative_url }}">&larr; All posts</a>
+    <header class="post-header">
+      <span class="post-date">{{ page.date | date: "%B %-d, %Y" }}</span>
+      <h1>{{ page.title }}</h1>
+    </header>
+    <div class="post-content">
+      {{ content }}
+    </div>
+  </div>
+</section>
