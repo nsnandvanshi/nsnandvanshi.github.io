@@ -1,0 +1,329 @@
+---
+layout: default
+title: Home
+---
+
+<!-- ============================================== -->
+<!-- SIGN-IN POPUP + FIREBASE AUTH (drop-in block)  -->
+<!-- Fill in YOUR_FIREBASE_CONFIG below before use. -->
+<!-- ============================================== -->
+
+<!-- Welcome popup: appears 5s after page load -->
+<div id="welcomeModal" class="auth-overlay" style="display:none;">
+  <div class="auth-box">
+    <button class="auth-close" onclick="closeModal('welcomeModal')" aria-label="Close">&times;</button>
+    <h2>Welcome!</h2>
+    <p>Sign in or create an account to stay connected.</p>
+    <button class="auth-btn-primary" onclick="closeModal('welcomeModal'); openModal('loginModal');">Sign In</button>
+    <button class="auth-btn-secondary" onclick="closeModal('welcomeModal')">Maybe later</button>
+  </div>
+</div>
+
+<!-- Login / Signup modal -->
+<div id="loginModal" class="auth-overlay" style="display:none;">
+  <div class="auth-box">
+    <button class="auth-close" onclick="closeModal('loginModal')" aria-label="Close">&times;</button>
+    <h2>Sign In</h2>
+    <input type="email" id="authEmail" placeholder="Email" class="auth-input">
+    <input type="password" id="authPassword" placeholder="Password" class="auth-input">
+    <p id="authError" class="auth-error"></p>
+    <button class="auth-btn-primary" onclick="firebaseSignIn()">Sign In</button>
+    <button class="auth-btn-secondary" onclick="firebaseSignUp()">Create Account</button>
+  </div>
+</div>
+
+<style>
+  .auth-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.6);
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+  }
+  .auth-box {
+    background: #fff;
+    padding: 2rem;
+    border-radius: 10px;
+    width: 90%;
+    max-width: 340px;
+    text-align: center;
+    position: relative;
+    font-family: inherit;
+  }
+  .auth-box h2 { margin: 0 0 0.5rem; }
+  .auth-box p { margin: 0 0 1.25rem; color: #555; }
+  .auth-close {
+    position: absolute;
+    top: 10px;
+    right: 14px;
+    background: none;
+    border: none;
+    font-size: 1.4rem;
+    cursor: pointer;
+    color: #888;
+    line-height: 1;
+  }
+  .auth-input {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    box-sizing: border-box;
+    font-size: 1rem;
+  }
+  .auth-btn-primary, .auth-btn-secondary {
+    width: 100%;
+    padding: 10px;
+    margin-top: 6px;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+    font-size: 1rem;
+  }
+  .auth-btn-primary { background: #222; color: #fff; }
+  .auth-btn-secondary { background: #eee; color: #333; }
+  .auth-error { color: #c0392b; font-size: 0.85rem; min-height: 1.1em; margin: -0.5rem 0 0.5rem; }
+</style>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import {
+    getAuth,
+    createUserWithEmailAndPassword,
+    signInWithEmailAndPassword,
+    onAuthStateChanged
+  } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+
+  // ---- PASTE YOUR FIREBASE CONFIG HERE ----
+  const firebaseConfig = {
+    apiKey: "YOUR_API_KEY",
+    authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
+    projectId: "YOUR_PROJECT_ID",
+    appId: "YOUR_APP_ID"
+  };
+  // ------------------------------------------
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+
+  window.openModal = (id) => {
+    document.getElementById(id).style.display = "flex";
+  };
+  window.closeModal = (id) => {
+    document.getElementById(id).style.display = "none";
+  };
+
+  window.firebaseSignIn = function () {
+    const email = document.getElementById("authEmail").value;
+    const password = document.getElementById("authPassword").value;
+    const errorEl = document.getElementById("authError");
+    errorEl.textContent = "";
+    signInWithEmailAndPassword(auth, email, password)
+      .then((cred) => {
+        closeModal("loginModal");
+        alert("Signed in as " + cred.user.email);
+      })
+      .catch((err) => { errorEl.textContent = err.message; });
+  };
+
+  window.firebaseSignUp = function () {
+    const email = document.getElementById("authEmail").value;
+    const password = document.getElementById("authPassword").value;
+    const errorEl = document.getElementById("authError");
+    errorEl.textContent = "";
+    createUserWithEmailAndPassword(auth, email, password)
+      .then((cred) => {
+        closeModal("loginModal");
+        alert("Account created for " + cred.user.email);
+      })
+      .catch((err) => { errorEl.textContent = err.message; });
+  };
+
+  // Show the welcome popup 5 seconds after page load
+  window.addEventListener("DOMContentLoaded", () => {
+    setTimeout(() => openModal("welcomeModal"), 5000);
+  });
+
+  // Optional: track sign-in state across the site
+  onAuthStateChanged(auth, (user) => {
+    if (user) {
+      console.log("Logged in as:", user.email);
+    }
+  });
+</script>
+
+<!-- ============== END DROP-IN BLOCK ============== -->
+
+<section class="hero">
+  <div class="wrap">
+    <div>
+      <span class="hero-eyebrow">Author of contemporary fiction &amp; romance</span>
+      <h1>Real love and deep healing don't demand to be loud or perfect — <em>they just need to be true.</em></h1>
+      <p class="hero-sub">I'm N.S. Nandvanshi. I write stories that make a home for the reader within the pages.</p>
+    </div>
+    <div class="hero-portrait" id="heroPortrait">
+      <div class="pen-name-wrap">
+        <span class="pen-name">N.S. Nandvanshi</span>
+      </div>
+      <div class="portrait-frame">
+        <img src="{{ '/assets/images/author.png' | relative_url }}" alt="N.S. Nandvanshi">
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="scroll-strip" id="scrollStrip" aria-hidden="true">
+  <div class="scroll-strip-track" id="scrollStripTrack">
+    <span>✦</span><span>—</span><span>✦</span><span>—</span>
+    <span>✦</span><span>—</span><span>✦</span><span>—</span>
+    <span>✦</span><span>—</span><span>✦</span><span>—</span>
+    <span>✦</span><span>—</span><span>✦</span><span>—</span>
+    <span>✦</span><span>—</span><span>✦</span><span>—</span>
+    <span>✦</span><span>—</span><span>✦</span><span>—</span>
+  </div>
+</div>
+
+{% include divider.html %}
+
+<script>
+  // Fallback pen-name reveal for browsers without native scroll-timeline support
+  if (!CSS.supports('animation-timeline: view()')) {
+    const heroPortrait = document.getElementById('heroPortrait');
+    if (heroPortrait) {
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            const name = heroPortrait.querySelector('.pen-name');
+            name.style.transition = 'transform 0.9s cubic-bezier(0.16,1,0.3,1), opacity 0.9s ease';
+            name.style.transform = 'translateY(0%)';
+            name.style.opacity = '1';
+          }
+        });
+      }, { threshold: 0.35 });
+      observer.observe(heroPortrait);
+    }
+  }
+
+  // Decorative strip moves right-to-left only while the user scrolls
+  (function () {
+    const track = document.getElementById('scrollStripTrack');
+    if (!track) return;
+    let offset = 0;
+    let velocity = 0;
+    let lastScrollY = window.scrollY;
+
+    window.addEventListener('scroll', () => {
+      const currentY = window.scrollY;
+      velocity += (currentY - lastScrollY) * 0.6;
+      lastScrollY = currentY;
+    }, { passive: true });
+
+    function animateStrip() {
+      velocity *= 0.92;
+      offset -= velocity;
+      const trackWidth = track.scrollWidth / 2;
+      if (trackWidth > 0) {
+        if (offset <= -trackWidth) offset += trackWidth;
+        if (offset > 0) offset -= trackWidth;
+      }
+      track.style.transform = `translateX(${offset}px)`;
+      requestAnimationFrame(animateStrip);
+    }
+    requestAnimationFrame(animateStrip);
+  })();
+</script>
+
+<section class="about">
+  <div class="wrap">
+    <span class="section-label">About</span>
+    <div class="about-body">
+      <p>Writing is not just a profession for me — it is a way to explore the deep, often unspoken complexities of human emotion, love, and resilience.</p>
+      <p>To date, I have published eight books — a milestone that represents countless late nights, deep reflections, and an unwavering commitment to the craft of storytelling. My work spans contemporary fiction and heartwarming romance, focusing on the quiet, powerful moments that connect us all: the intense and gripping dynamics of trust and obsession, the gentle magic of unexpected connections, the beauty of a quiet, enduring love.</p>
+      <p>I invite you to step into worlds filled with tender feelings, hopeful beginnings, and characters who face their darkest scars to find their brightest futures. I write for you, and I hope my words continue to leave you smiling and believing in the quiet power of the heart.</p>
+    </div>
+  </div>
+</section>
+
+{% include divider.html %}
+
+<section class="books">
+  <div class="wrap">
+    <span class="section-label">Bibliography</span>
+    <h2 class="section-heading">Books</h2>
+
+    {% assign books = site.books | sort: 'order' %}
+    {% if books.size > 0 %}
+      <div class="books-grid">
+        {% for book in books limit: 4 %}
+          <a class="book-card" href="{{ book.url | relative_url }}">
+            <div class="book-cover">
+              {% if book.cover %}
+                <img src="{{ book.cover | relative_url }}" alt="{{ book.title }} cover">
+              {% else %}
+                <span class="book-cover-placeholder">{{ book.title }}</span>
+              {% endif %}
+            </div>
+            <div class="book-card-body">
+              <h3>{{ book.title }}</h3>
+              <p>{{ book.description }}</p>
+            </div>
+          </a>
+        {% endfor %}
+      </div>
+      <p style="margin-top: 1.5rem;"><a href="{{ '/books/' | relative_url }}">See all books &rarr;</a></p>
+    {% else %}
+      <div class="empty-state">
+        Books will appear here as soon as you add them. See <code>HOW-TO-ADD-A-BOOK.md</code> for the simple template.
+      </div>
+    {% endif %}
+  </div>
+</section>
+
+{% include divider.html %}
+
+<section class="blog-section">
+  <div class="wrap">
+    <span class="section-label">Writing</span>
+    <h2 class="section-heading">From the Blog</h2>
+
+    {% if site.posts.size > 0 %}
+      <div class="post-list">
+        {% for post in site.posts limit: 3 %}
+          <article class="post-row">
+            <span class="post-date">{{ post.date | date: "%b %-d, %Y" }}</span>
+            <div>
+              <h3><a href="{{ post.url | relative_url }}">{{ post.title }}</a></h3>
+              <p class="post-excerpt">{{ post.excerpt | strip_html | truncatewords: 28 }}</p>
+            </div>
+          </article>
+        {% endfor %}
+      </div>
+      <p style="margin-top: 1.5rem;"><a href="{{ '/blog/' | relative_url }}">Read all posts &rarr;</a></p>
+    {% else %}
+      <div class="empty-state">
+        No posts yet. See <code>HOW-TO-WRITE-A-BLOG-POST.md</code> to publish your first one.
+      </div>
+    {% endif %}
+  </div>
+</section>
+
+{% include divider.html %}
+
+<section class="newsletter" id="newsletter">
+  <div class="wrap">
+    <div class="newsletter-card">
+      <div>
+        <h2>Stay close to the story</h2>
+        <p>Join the list for new releases, quiet updates, and the occasional behind-the-pages note. No spam, ever.</p>
+      </div>
+      <form class="signup-form" action="https://formspree.io/f/{{ site.formspree_id }}" method="POST">
+        <input type="text" name="name" placeholder="Your name" required>
+        <input type="email" name="email" placeholder="Your email" required>
+        <button type="submit">Join the list</button>
+        <span class="form-note">By joining, you'll hear from N.S. Nandvanshi by email. Unsubscribe anytime.</span>
+      </form>
+    </div>
+  </div>
+</section>
