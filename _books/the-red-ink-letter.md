@@ -1,6 +1,6 @@
 ---
-  title: The Red Ink Letter
-  description: "A memory-wiped woman, must decode her past using a mysterious letter written in red ink."
+title: The Red Ink Letter
+description: "A memory-wiped woman, must decode her past using a mysterious letter written in red ink."
 cover: /assets/images/The-Red-Ink-Letter.jpg
 order: 2
 links:
@@ -14,4 +14,5 @@ links:
     url: "https://www.barnesandnoble.com/w/the-red-ink-letter-n-s-nandvanshi/1147527047"
 ---
 
-The story explores deep themes of identity, trauma, emotional depth, and hidden truths. As the protagonist slowly uncovers the secrets buried in her memory, the narrative keeps readers in constant suspense, building up to a final, major reveal.
+The story explores deep themes of identity, trauma, emotional depth, and hidden truths.
+As the protagonist slowly uncovers the secrets buried in her memory, the narrative keeps readers in constant suspense, building up to a final, major reveal.
