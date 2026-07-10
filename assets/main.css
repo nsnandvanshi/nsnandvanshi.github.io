@@ -479,7 +479,7 @@ form.signup-form button:hover { background: var(--color-ink); }
   width: 100%;
   height: 3.2rem;
   overflow: hidden;
-  margin-bottom: -2.6rem;
+  margin-bottom: -0.6rem;
   z-index: 1;
   display: flex;
   justify-content: center;
