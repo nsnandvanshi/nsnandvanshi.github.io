@@ -556,15 +556,6 @@ form.signup-form button:hover { background: var(--color-ink); }
 
 /* pure-CSS scroll reveal for browsers that support it (Chrome/Edge);
    JS fallback below covers Firefox/Safari */
-@supports (animation-timeline: view()) {
-  .pen-name {
-    animation: pen-name-glide 1ms linear;
-    animation-timeline: view();
-    animation-range: entry 0% cover 40%;
-    animation-fill-mode: both;
-  }
-}
-
 @keyframes pen-name-glide {
   from { transform: translateY(115%); opacity: 0; }
   to   { transform: translateY(0%); opacity: 1; }
