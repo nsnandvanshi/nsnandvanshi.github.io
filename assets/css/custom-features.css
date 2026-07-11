@@ -1,0 +1,109 @@
+/* --- GLOBAL THEME & MOBILE RESPONSIVENESS --- */
+body {
+  background-color: #171123 !important;
+  color: #e2daf0 !important;
+  overflow-x: hidden;
+  margin: 0;
+  padding: 0;
+}
+
+/* Fix default header layouts that might still be white */
+header, .site-header, .nav-bar {
+  background-color: #171123 !important;
+  border-bottom: 1px solid rgba(180, 140, 252, 0.2);
+}
+
+/* --- MOBILE FIRST NAVIGATION FIXED --- */
+.custom-nav-wrapper {
+  max-width: 1200px;
+  margin: 10px auto;
+  padding: 10px 15px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.nav-brand-logo {
+  font-weight: 700;
+  font-size: 1.6rem !important;
+  color: #cbb3ff !important;
+}
+
+.nav-horizontal-links {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+/* --- LIGHTER PILL GRADIENT BUTTONS --- */
+.pill-btn {
+  background: linear-gradient(135deg, #bfa3ff, #ddccff) !important;
+  color: #120c1f !important;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 50px;
+  font-weight: 600;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.pill-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(203, 179, 255, 0.4);
+}
+
+/* --- AUTHOR IMAGE SPIN STOPPED & FIXED --- */
+.hero-portrait, #heroPortrait {
+  position: relative;
+  animation: none !important;
+}
+.hero-portrait::before, 
+.hero-portrait::after,
+.portrait-decoration-bg,
+[class*="spin"], [id*="spin"] {
+  animation: none !important;
+  transform: none !important;
+  display: block;
+  position: absolute;
+  z-index: 1;
+}
+
+/* --- GLASS MODAL FOR MOBILE --- */
+.auth-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(10, 7, 16, 0.85);
+  backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  padding: 15px;
+}
+
+.glass-modal {
+  background: #1e162e;
+  border: 2px solid rgba(180, 140, 252, 0.4);
+  padding: 2rem 1.5rem;
+  border-radius: 20px;
+  width: 100%;
+  max-width: 400px;
+  box-sizing: border-box;
+  text-align: center;
+}
+
+.auth-input {
+  width: 100%;
+  padding: 12px;
+  margin-bottom: 12px;
+  border: 1px solid #4a3b68;
+  background: #251c3a;
+  color: #fff;
+  border-radius: 8px;
+  box-sizing: border-box;
+}
