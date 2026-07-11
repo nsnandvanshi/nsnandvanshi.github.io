@@ -3,57 +3,53 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Anonymous Confessions</title>
-  <link rel="stylesheet" href="css/custom-features.css">
+  <title>Confessions Wall</title>
+  <link rel="stylesheet" href="main.css">
   <style>
-    body { font-family: system-ui; background:#171123; color:#e2daf0; padding:20px; }
-    .box { max-width:600px; margin:0 auto; background:#1e162e; padding:20px; border-radius:12px; border:1px solid #4a3b68; }
-    textarea { width:100%; height:100px; background:#251c3a; color:#fff; border:1px solid #4a3b68; border-radius:8px; padding:10px; box-sizing:border-box; }
-    .post { background:rgba(255,255,255,0.05); padding:12px; margin-top:10px; border-radius:8px; }
+    .panel { max-width:600px; margin:25px auto; background:var(--color-bg-soft); padding:20px; border-radius:12px; border:1px solid var(--color-line); }
+    .post-card { background:rgba(255,255,255,0.03); padding:12px; border-radius:8px; margin-top:10px; display:flex; justify-content:space-between; align-items:center; }
   </style>
 </head>
 <body>
-<div class="box">
-  <a href="dashboard.html" style="color:#bfa3ff; text-decoration:none;">&larr; Back to Dashboard</a>
-  <h2>Anonymous Confession Wall 🤫</h2>
-  <textarea id="msgInput" placeholder="Write your anonymous confession here..."></textarea>
-  <button class="pill-btn" style="width:100%; margin-top:10px;" onclick="submitConfession()">Post Anonymously</button>
+<div class="panel">
+  <div style="display:flex; justify-content:between; align-items:center; width:100%;">
+    <a href="dashboard.html" style="color:var(--color-accent); font-weight:600;">&larr; Back to Dashboard</a>
+  </div>
+  <h2>Anonymous Confessions Wall 🤫</h2>
+  <textarea id="confessInput" placeholder="Enter an anonymous note..."></textarea>
+  <button class="pill-btn" style="width:100%; margin-top:5px;" onclick="addConfession()">Post to Wall</button>
 
-  <div id="wall" style="margin-top:20px;"></div>
+  <div id="confessContainer" style="margin-top:20px;"></div>
 </div>
 
-<script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-  import { getDatabase, ref, push, onValue } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
-
-  const firebaseConfig = {
-    apiKey: "AIzaSyALh5lDBnHK69BORMhh3mM9tZiOeFdomm0",
-    authDomain: "website-git.firebaseapp.com",
-    projectId: "website-git",
-    databaseURL: "https://website-git-default-rtdb.firebaseio.com/"
-  };
-
-  const app = initializeApp(firebaseConfig);
-  const db = getDatabase(app);
-
-  window.submitConfession = () => {
-    const text = document.getElementById("msgInput").value;
-    if(!text.trim()) return;
-    push(ref(db, 'confessions'), { text: text, time: Date.now() });
-    document.getElementById("msgInput").value = "";
-  };
-
-  onValue(ref(db, 'confessions'), (snapshot) => {
-    const wall = document.getElementById("wall");
-    wall.innerHTML = "";
-    snapshot.forEach((child) => {
-      const data = child.val();
-      const div = document.createElement("div");
-      div.className = "post";
-      div.textContent = data.text;
-      wall.prepend(div);
+<script>
+  function renderConfessions() {
+    const data = JSON.parse(localStorage.getItem("wall_posts") || "[]");
+    const container = document.getElementById("confessContainer");
+    container.innerHTML = "";
+    data.forEach((item, idx) => {
+      const card = document.createElement("div");
+      card.className = "post-card";
+      card.innerHTML = `<span>${item}</span><button class="pill-btn" style="background:#ff6b6b!important;" onclick="removeConfession(${idx})">Delete</button>`;
+      container.appendChild(card);
     });
-  });
+  }
+  window.addConfession = () => {
+    const val = document.getElementById("confessInput").value.trim();
+    if(!val) return;
+    const data = JSON.parse(localStorage.getItem("wall_posts") || "[]");
+    data.push(val);
+    localStorage.setItem("wall_posts", JSON.stringify(data));
+    document.getElementById("confessInput").value = "";
+    renderConfessions();
+  };
+  window.removeConfession = (idx) => {
+    const data = JSON.parse(localStorage.getItem("wall_posts") || "[]");
+    data.splice(idx, 1);
+    localStorage.setItem("wall_posts", JSON.stringify(data));
+    renderConfessions();
+  };
+  document.addEventListener("DOMContentLoaded", renderConfessions);
 </script>
 </body>
 </html>
