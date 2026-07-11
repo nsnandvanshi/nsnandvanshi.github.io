@@ -3,68 +3,63 @@ layout: default
 title: Home
 ---
 
-<!-- Link our mobile responsive styling -->
-<link rel="stylesheet" href="{{ '/assets/css/custom-features.css' | relative_url }}">
+<link rel="stylesheet" href="{{ '/assets/main.css' | relative_url }}">
 
-<div class="custom-nav-wrapper">
-  <div class="nav-brand-logo">📚 N.S. Nandvanshi</div>
-  <div class="nav-horizontal-links">
-    <a href="#books" class="pill-btn">Books</a>
-    <span id="navUserGreeting" style="color: #e2daf0; font-size: 0.9rem;"></span>
-    <button id="navAuthBtn" class="pill-btn" onclick="handleNavAuthClick()">Sign In</button>
+<header class="site-header">
+  <div class="wrap">
+    <div class="brand">📚 N.S. Nandvanshi</div>
+    <div class="nav-horizontal-links">
+      <a href="#about" class="pill-btn" style="background:transparent!important; color:var(--color-ink)!important;">About</a>
+      <a href="#books" class="pill-btn" style="background:transparent!important; color:var(--color-ink)!important;">Bibliography</a>
+      <span id="navUserGreeting" style="font-size: 0.9rem; margin-right: 5px;"></span>
+      <button id="navAuthBtn" class="pill-btn" onclick="handleNavAuthClick()">Sign In</button>
+    </div>
   </div>
-</div>
+</header>
 
-<!-- Welcome Redesigned Popup (5 seconds delay) -->
+<!-- Auth Popups -->
 <div id="welcomeModal" class="auth-overlay" style="display:none;">
   <div class="glass-modal">
-    <div style="font-size: 3rem; margin-bottom: 0.5rem;">✨</div>
-    <h2 style="color: #f3effa; margin-top:0;">Welcome, Reader!</h2>
-    <p style="color: #cbb3ff; font-size: 0.9rem; margin-bottom: 20px;">Join my community platform to access exclusive release trackers and interact directly on our community walls.</p>
+    <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">✨</div>
+    <h2>Welcome, Reader!</h2>
+    <p>Join my personal network to track premium release details and use our reader walls.</p>
     <button class="pill-btn" style="width: 100%;" onclick="closeModal('welcomeModal'); openModal('loginModal');">Get Started</button>
   </div>
 </div>
 
-<!-- Auth Modal -->
 <div id="loginModal" class="auth-overlay" style="display:none;">
   <div class="glass-modal">
-    <h2 id="authTitle" style="color: #f3effa; margin-top: 0;">Sign In</h2>
-    <p id="authSubtitle" style="color: #a99cb8; font-size: 0.85rem;">Access your community profile</p>
+    <h2 id="authTitle">Sign In</h2>
+    <p id="authSubtitle" style="font-size:0.85rem; margin-bottom:15px;">Access your reader features</p>
     
-    <button class="pill-btn" style="width: 100%; background: #fff !important; color: #000 !important; margin-bottom: 15px;" onclick="firebaseGoogleAuth()">Continue with Google</button>
+    <button class="pill-btn" style="width: 100%; background: #fff !important; color: #000 !important; margin-bottom: 12px;" onclick="firebaseGoogleAuth()">Continue with Google</button>
     
-    <div id="signupExtraFields" style="display: none;">
-      <input type="text" id="authName" placeholder="Your Name" class="auth-input">
-    </div>
-    <input type="email" id="authEmail" placeholder="Email Address" class="auth-input">
-    <input type="password" id="authPassword" placeholder="Password" class="auth-input">
-    
-    <!-- ADDED PASSWORD CONFIRMATION FIELD -->
+    <input type="email" id="authEmail" placeholder="Email Address">
+    <input type="password" id="authPassword" placeholder="Password">
     <div id="confirmPasswordArea" style="display: none;">
-      <input type="password" id="authConfirmPassword" placeholder="Confirm Password" class="auth-input">
+      <input type="password" id="authConfirmPassword" placeholder="Confirm Password">
     </div>
     
-    <p id="authError" style="color: #ff6b6b; font-size: 0.8rem; margin: 5px 0;"></p>
+    <p id="authError" style="color: #ff6b6b; font-size: 0.85rem;"></p>
     <button id="primaryAuthActionBtn" class="pill-btn" style="width: 100%;" onclick="handleEmailAuth()">Sign In</button>
     
     <p style="font-size: 0.85rem; margin-top: 15px;">
       <span id="authToggleMessage">New here?</span> 
-      <a href="javascript:void(0)" id="authToggleLink" onclick="toggleAuthMode()" style="color: #cbb3ff; font-weight: 600;">Create account</a>
+      <a href="javascript:void(0)" id="authToggleLink" onclick="toggleAuthMode()" style="color: var(--color-accent); font-weight:600;">Create account</a>
     </p>
   </div>
 </div>
 
-<!-- ============================================================== -->
-<!--    HERO SECTION & ORIGINAL LAYOUTS                            -->
-<!-- ============================================================== -->
+<!-- ==================== HERO SECTOR ==================== -->
 <section class="hero">
   <div class="wrap">
     <div>
-      <span class="hero-eyebrow" style="color: #cbb3ff;">Author of contemporary fiction &amp; romance</span>
+      <span class="hero-eyebrow">Author of contemporary fiction &amp; romance</span>
       <h1>Real love and deep healing don't demand to be loud or perfect — <em>they just need to be true.</em></h1>
-      <p class="hero-sub" style="color: #a99cb8;">I'm N.S. Nandvanshi. I write stories that make a home for the reader within the pages.</p>
+      <p class="hero-sub">I'm N.S. Nandvanshi. I write stories that make a home for the reader within the pages.</p>
     </div>
     <div class="hero-portrait" id="heroPortrait">
+      <div class="pen-name">N.S. Nandvanshi</div>
       <div class="portrait-frame">
         <img src="{{ '/assets/images/author.png' | relative_url }}" alt="N.S. Nandvanshi">
       </div>
@@ -72,11 +67,47 @@ title: Home
   </div>
 </section>
 
-<!-- ... Keep your standard portfolio layout, loops, and about items intact below ... -->
+<!-- ==================== ABOUT SECTION (RESTORED) ==================== -->
+<section class="about" id="about">
+  <div class="wrap">
+    <span class="section-label">About</span>
+    <div class="about-body">
+      <p>Writing is not just a profession for me — it is a way to explore the deep, often unspoken complexities of human emotion, love, and resilience.</p>
+      <p>To date, I have published eight books — a milestone that represents countless late nights, deep reflections, and an unwavering commitment to the craft of storytelling. My work spans contemporary fiction and heartwarming romance, focusing on the quiet, powerful moments that connect us all: the intense and gripping dynamics of trust and obsession, the gentle magic of unexpected connections, the beauty of a quiet, enduring love.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== BIBLIOGRAPHY SECTION (RESTORED) ==================== -->
+<section class="books" id="books">
+  <div class="wrap">
+    <span class="section-label">Bibliography</span>
+    <h2 class="section-heading">Books Collection</h2>
+    {% assign books = site.books | sort: 'order' %}
+    {% if books.size > 0 %}
+      <div class="books-grid">
+        {% for book in books %}
+          <div class="book-card">
+            <div class="book-cover">
+              {% if book.cover %}<img src="{{ book.cover | relative_url }}" alt="{{ book.title }}">
+              {% else % class="book-cover-placeholder"}{{ book.title }}{% endif %}
+            </div>
+            <div class="book-card-body">
+              <h3>{{ book.title }}</h3>
+              <p>{{ book.description }}</p>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    {% else %}
+      <div class="empty-state">Books metrics loading framework active.</div>
+    {% endif %}
+  </div>
+</section>
 
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-  import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+  import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 
   const firebaseConfig = {
     apiKey: "AIzaSyALh5lDBnHK69BORMhh3mM9tZiOeFdomm0",
@@ -94,38 +125,30 @@ title: Home
   window.closeModal = (id) => document.getElementById(id).style.display = "none";
   
   window.handleNavAuthClick = () => {
-    if(auth.currentUser) {
-      window.location.href = "{{ '/assets/dashboard.html' | relative_url }}";
-    } else {
-      openModal("loginModal");
-    }
+    if(auth.currentUser) { window.location.href = "{{ '/assets/dashboard.html' | relative_url }}"; }
+    else { openModal("loginModal"); }
   };
 
   window.toggleAuthMode = () => {
     isSignInMode = !isSignInMode;
     document.getElementById("authTitle").textContent = isSignInMode ? "Sign In" : "Create Account";
-    document.getElementById("signupExtraFields").style.display = isSignInMode ? "none" : "block";
     document.getElementById("confirmPasswordArea").style.display = isSignInMode ? "none" : "block";
     document.getElementById("primaryAuthActionBtn").textContent = isSignInMode ? "Sign In" : "Register";
-    document.getElementById("authToggleLink").textContent = isSignInMode ? "Create account" : "Sign In";
   };
 
   window.handleEmailAuth = () => {
     const email = document.getElementById("authEmail").value;
     const password = document.getElementById("authPassword").value;
-    const confirmPass = document.getElementById("authConfirmPassword").value;
     const errorEl = document.getElementById("authError");
     
-    if(!isSignInMode && password !== confirmPass) {
-      errorEl.textContent = "Passwords do not match.";
-      return;
-    }
-
     if(isSignInMode) {
       signInWithEmailAndPassword(auth, email, password)
         .then(() => window.location.href = "{{ '/assets/dashboard.html' | relative_url }}")
         .catch(err => errorEl.textContent = err.message);
     } else {
+      if(password !== document.getElementById("authConfirmPassword").value) {
+        errorEl.textContent = "Passwords match error."; return;
+      }
       createUserWithEmailAndPassword(auth, email, password)
         .then(() => window.location.href = "{{ '/assets/dashboard.html' | relative_url }}")
         .catch(err => errorEl.textContent = err.message);
