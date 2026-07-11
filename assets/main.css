@@ -83,6 +83,15 @@ img { max-width: 100%; display: block; }
   width: 100%;
 }
 
+/* Restricts the massive logo graphic layout dynamically */
+header img, .icon img {
+  max-height: 60px !important; 
+  width: auto !important;
+  object-fit: contain;
+  display: inline-block;
+  vertical-align: middle;
+}
+
 /* ---------- Header / Mobile-First Navigation ---------- */
 .site-header {
   padding: 1.2rem 0;
