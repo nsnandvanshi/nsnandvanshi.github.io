@@ -83,6 +83,36 @@ img { max-width: 100%; display: block; }
   width: 100%;
 }
 
+<link rel="stylesheet" href="{{ '/assets/main.css' | relative_url }}">
+  <link rel="icon" href="{{ '/assets/images/logo.jpg' | relative_url }}">
+</head>
+<body>
+
+  <!-- FORCE LOGO TO SHRINK BY OVERRIDING CSS SYSTEM STYLES -->
+  <style>
+    header.site-header a.brand img, 
+    .brand img, 
+    .site-header img {
+      max-height: 55px !important;
+      width: auto !important;
+      display: inline-block !important;
+      object-fit: contain !important;
+    }
+    
+    /* Optional: Keeps the navigation layout clean if the row wraps weirdly */
+    .site-header .wrap {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+  </style>
+
+  <header class="site-header">
+    <div class="wrap">
+      <a class="brand" href="{{ '/' | relative_url }}">
+        <img src="{{ '/assets/images/logo.jpg' | relative_url }}" alt="{{ site.author }} logo">
+
+
 /* ---------- Header / Mobile-First Navigation ---------- */
 .site-header {
   padding: 1.2rem 0;
