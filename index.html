@@ -2,33 +2,77 @@
 layout: default
 title: Home
 ---
+<!-- ============================================================== -->
+<!--    UPGRADED AUTHENTICATION BLOCK WITH ANIMATIONS & GOOGLE      -->
+<!-- ============================================================== -->
 
-<!-- ============================================== -->
-<!-- SIGN-IN POPUP + FIREBASE AUTH (drop-in block)  -->
-<!-- Fill in YOUR_FIREBASE_CONFIG below before use. -->
-<!-- ============================================== -->
+<!-- Inline Navigation Hook (Add this anywhere in your site header/nav if you like) -->
+<div class="auth-nav-bar" style="max-width: 1200px; margin: 10px auto; padding: 0 20px; text-align: right;">
+  <span id="navUserGreeting" style="margin-right: 15px; font-weight: 500;"></span>
+  <button id="navAuthBtn" class="auth-btn-inline" onclick="handleNavAuthClick()">Sign In</button>
+</div>
 
-<!-- Welcome popup: appears 5s after page load -->
+<!-- Welcome popup: Appears smoothly -->
 <div id="welcomeModal" class="auth-overlay" style="display:none;">
-  <div class="auth-box">
+  <div class="auth-box anim-pop">
     <button class="auth-close" onclick="closeModal('welcomeModal')" aria-label="Close">&times;</button>
-    <h2>Welcome!</h2>
-    <p>Sign in or create an account to stay connected.</p>
-    <button class="auth-btn-primary" onclick="closeModal('welcomeModal'); openModal('loginModal');">Sign In</button>
+    <div class="anim-bounce" style="font-size: 3rem; margin-bottom: 0.5rem;">📚</div>
+    <h2>Welcome, Reader!</h2>
+    <p>Create a profile to track new releases and save your favorite contemporary romance selections.</p>
+    <button class="auth-btn-primary" onclick="closeModal('welcomeModal'); openModal('loginModal');">Let's Go</button>
     <button class="auth-btn-secondary" onclick="closeModal('welcomeModal')">Maybe later</button>
   </div>
 </div>
 
-<!-- Login / Signup modal -->
+<!-- Combined Login / Signup / Profile Modal -->
 <div id="loginModal" class="auth-overlay" style="display:none;">
-  <div class="auth-box">
+  <div class="auth-box anim-pop">
     <button class="auth-close" onclick="closeModal('loginModal')" aria-label="Close">&times;</button>
-    <h2>Sign In</h2>
-    <input type="email" id="authEmail" placeholder="Email" class="auth-input">
-    <input type="password" id="authPassword" placeholder="Password" class="auth-input">
-    <p id="authError" class="auth-error"></p>
-    <button class="auth-btn-primary" onclick="firebaseSignIn()">Sign In</button>
-    <button class="auth-btn-secondary" onclick="firebaseSignUp()">Create Account</button>
+    
+    <!-- STATE 1: GUEST VIEW (Form) -->
+    <div id="authGuestView">
+      <h2 id="authTitle">Sign In</h2>
+      <p id="authSubtitle">Access your reader profile</p>
+      
+      <!-- Google Auth Button (Fast & Clean) -->
+      <button class="auth-btn-google" onclick="firebaseGoogleAuth()">
+        <svg viewBox="0 0 24 24" width="18" height="18" xmlns="http://www.w3.org/2000/svg"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
+        Continue with Google
+      </button>
+
+      <div class="auth-divider"><span>or use email</span></div>
+
+      <input type="email" id="authEmail" placeholder="Email Address" class="auth-input">
+      <input type="password" id="authPassword" placeholder="Password" class="auth-input">
+      <p id="authError" class="auth-error"></p>
+      
+      <button id="primaryAuthActionBtn" class="auth-btn-primary" onclick="handleEmailAuth()">Sign In</button>
+      
+      <p class="auth-toggle-text">
+        <span id="authToggleMessage">New to the site?</span> 
+        <a href="javascript:void(0)" id="authToggleLink" onclick="toggleAuthMode()">Create an account</a>
+      </p>
+    </div>
+
+    <!-- STATE 2: SIGNED-IN USER DASHBOARD -->
+    <div id="authUserView" style="display: none;">
+      <div class="profile-avatar-wrap">
+        <img id="profileAvatar" src="" alt="Avatar" class="profile-avatar">
+      </div>
+      <h2 style="margin-bottom: 5px;">Hey there, <span id="profileName">Reader</span>! 👋</h2>
+      <p id="profileEmail" style="font-size: 0.9rem; color: #666; margin-bottom: 20px;"></p>
+      
+      <div style="background: #f9f9f9; padding: 15px; border-radius: 8px; margin-bottom: 20px; font-size: 0.9rem; text-align: left; color: #444;">
+        <strong>🎉 Member Perks Unlocked:</strong>
+        <ul style="margin: 5px 0 0 20px; padding: 0;">
+          <li>Early updates on <em>Velvet Scars</em></li>
+          <li>Exclusive writer logs access</li>
+        </ul>
+      </div>
+
+      <button class="auth-btn-secondary" onclick="firebaseSignOut()">Sign Out</button>
+    </div>
+
   </div>
 </div>
 
@@ -36,55 +80,91 @@ title: Home
   .auth-overlay {
     position: fixed;
     inset: 0;
-    background: rgba(0,0,0,0.6);
+    background: rgba(0,0,0,0.4);
+    backdrop-filter: blur(4px);
+    display: flex;
     align-items: center;
     justify-content: center;
-    z-index: 1000;
+    z-index: 2000;
   }
   .auth-box {
     background: #fff;
-    padding: 2rem;
-    border-radius: 10px;
+    padding: 2.5rem 2rem;
+    border-radius: 16px;
     width: 90%;
-    max-width: 340px;
+    max-width: 360px;
     text-align: center;
     position: relative;
-    font-family: inherit;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+    border: 1px solid rgba(0,0,0,0.05);
   }
-  .auth-box h2 { margin: 0 0 0.5rem; }
-  .auth-box p { margin: 0 0 1.25rem; color: #555; }
+  
+  /* Modern Smooth Pop Animations */
+  .anim-pop {
+    animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+  }
+  @keyframes popIn {
+    from { transform: scale(0.8) translateY(30px); opacity: 0; }
+    to { transform: scale(1) translateY(0); opacity: 1; }
+  }
+
+  .anim-bounce {
+    display: inline-block;
+    animation: floating 2.5s ease-in-out infinite;
+  }
+  @keyframes floating {
+    0% { transform: translateY(0px) rotate(0deg); }
+    50% { transform: translateY(-10px) rotate(5deg); }
+    100% { transform: translateY(0px) rotate(0deg); }
+  }
+
   .auth-close {
-    position: absolute;
-    top: 10px;
-    right: 14px;
-    background: none;
-    border: none;
-    font-size: 1.4rem;
-    cursor: pointer;
-    color: #888;
-    line-height: 1;
+    position: absolute; top: 12px; right: 16px;
+    background: none; border: none; font-size: 1.6rem;
+    cursor: pointer; color: #aaa; transition: color 0.2s;
   }
+  .auth-close:hover { color: #333; }
+
   .auth-input {
-    width: 100%;
-    padding: 10px;
-    margin-bottom: 10px;
-    border: 1px solid #ccc;
-    border-radius: 6px;
-    box-sizing: border-box;
-    font-size: 1rem;
+    width: 100%; padding: 12px; margin-bottom: 12px;
+    border: 1px solid #ddd; border-radius: 8px;
+    box-sizing: border-box; font-size: 0.95rem;
+    transition: border-color 0.2s;
   }
-  .auth-btn-primary, .auth-btn-secondary {
-    width: 100%;
-    padding: 10px;
-    margin-top: 6px;
-    border-radius: 6px;
-    border: none;
-    cursor: pointer;
-    font-size: 1rem;
+  .auth-input:focus { border-color: #222; outline: none; }
+
+  .auth-btn-primary, .auth-btn-secondary, .auth-btn-google, .auth-btn-inline {
+    width: 100%; padding: 12px; margin-top: 8px;
+    border-radius: 8px; border: none; cursor: pointer;
+    font-size: 0.95rem; font-weight: 500;
+    transition: all 0.2s ease;
   }
   .auth-btn-primary { background: #222; color: #fff; }
-  .auth-btn-secondary { background: #eee; color: #333; }
-  .auth-error { color: #c0392b; font-size: 0.85rem; min-height: 1.1em; margin: -0.5rem 0 0.5rem; }
+  .auth-btn-primary:hover { background: #000; transform: translateY(-1px); }
+  
+  .auth-btn-secondary { background: #f3f3f3; color: #444; }
+  .auth-btn-secondary:hover { background: #eaeaea; }
+
+  .auth-btn-inline { width: auto; padding: 6px 16px; background: #222; color: #fff; font-size: 0.85rem; }
+  .auth-btn-inline:hover { background: #000; }
+
+  .auth-btn-google {
+    background: #fff; color: #3c4043; border: 1px solid #dadce0;
+    display: flex; align-items: center; justify-content: center; gap: 10px;
+  }
+  .auth-btn-google:hover { background: #f8fafc; border-color: #c3c6ca; }
+
+  .auth-divider {
+    margin: 16px 0; text-align: center;
+    border-bottom: 1px solid #eee; line-height: 0.1em;
+  }
+  .auth-divider span { background:#fff; padding:0 10px; color: #aaa; font-size: 0.8rem; }
+  .auth-error { color: #e74c3c; font-size: 0.85rem; margin: -4px 0 8px; min-height: 1.2em; text-align: left; }
+  .auth-toggle-text { font-size: 0.85rem; color: #666; margin-top: 15px; }
+  .auth-toggle-text a { color: #222; font-weight: 600; text-decoration: none; }
+  
+  .profile-avatar-wrap { display: inline-block; margin-bottom: 10px; position: relative; }
+  .profile-avatar { width: 80px; height: 80px; border-radius: 50%; object-fit: cover; border: 3px solid #222; }
 </style>
 
 <script type="module">
@@ -93,10 +173,13 @@ title: Home
     getAuth,
     createUserWithEmailAndPassword,
     signInWithEmailAndPassword,
+    signInWithPopup,
+    GoogleAuthProvider,
+    signOut,
     onAuthStateChanged
   } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 
-  // ---- PASTE YOUR FIREBASE CONFIG HERE ----
+  // ---- LIVE PROJECT CONFIGURATION APPLIED ----
   const firebaseConfig = {
     apiKey: "AIzaSyALh5lDBnHK69BORMhh3mM9tZiOeFdomm0",
     authDomain: "website-git.firebaseapp.com",
@@ -107,6 +190,9 @@ title: Home
 
   const app = initializeApp(firebaseConfig);
   const auth = getAuth(app);
+  const googleProvider = new GoogleAuthProvider();
+
+  let isSignInMode = true; 
 
   window.openModal = (id) => {
     document.getElementById(id).style.display = "flex";
@@ -115,42 +201,105 @@ title: Home
     document.getElementById(id).style.display = "none";
   };
 
-  window.firebaseSignIn = function () {
+  window.handleNavAuthClick = () => {
+    openModal("loginModal");
+  };
+
+  window.toggleAuthMode = () => {
+    isSignInMode = !isSignInMode;
+    const title = document.getElementById("authTitle");
+    const subtitle = document.getElementById("authSubtitle");
+    const actionBtn = document.getElementById("primaryAuthActionBtn");
+    const msg = document.getElementById("authToggleMessage");
+    const link = document.getElementById("authToggleLink");
+    document.getElementById("authError").textContent = "";
+
+    if (isSignInMode) {
+      title.textContent = "Sign In";
+      subtitle.textContent = "Access your reader profile";
+      actionBtn.textContent = "Sign In";
+      msg.textContent = "New to the site?";
+      link.textContent = "Create an account";
+    } else {
+      title.textContent = "Create Account";
+      subtitle.textContent = "Join the community library";
+      actionBtn.textContent = "Register";
+      msg.textContent = "Already have an account?";
+      link.textContent = "Sign In";
+    }
+  };
+
+  window.handleEmailAuth = function() {
     const email = document.getElementById("authEmail").value;
     const password = document.getElementById("authPassword").value;
     const errorEl = document.getElementById("authError");
     errorEl.textContent = "";
-    signInWithEmailAndPassword(auth, email, password)
-      .then((cred) => {
-        closeModal("loginModal");
-        alert("Signed in as " + cred.user.email);
-      })
-      .catch((err) => { errorEl.textContent = err.message; });
+
+    if(!email || !password) {
+      errorEl.textContent = "Please fill in all layout credentials.";
+      return;
+    }
+
+    if (isSignInMode) {
+      signInWithEmailAndPassword(auth, email, password)
+        .then(() => closeModal("loginModal"))
+        .catch((err) => { errorEl.textContent = err.message.replace("Firebase: ", ""); });
+    } else {
+      createUserWithEmailAndPassword(auth, email, password)
+        .then(() => closeModal("loginModal"))
+        .catch((err) => { errorEl.textContent = err.message.replace("Firebase: ", ""); });
+    }
   };
 
-  window.firebaseSignUp = function () {
-    const email = document.getElementById("authEmail").value;
-    const password = document.getElementById("authPassword").value;
+  window.firebaseGoogleAuth = function() {
     const errorEl = document.getElementById("authError");
     errorEl.textContent = "";
-    createUserWithEmailAndPassword(auth, email, password)
-      .then((cred) => {
-        closeModal("loginModal");
-        alert("Account created for " + cred.user.email);
-      })
-      .catch((err) => { errorEl.textContent = err.message; });
+    
+    signInWithPopup(auth, googleProvider)
+      .then(() => closeModal("loginModal"))
+      .catch((err) => { 
+        if(err.code !== 'auth/popup-closed-by-user') {
+          errorEl.textContent = err.message;
+        }
+      });
   };
 
-  // Show the welcome popup 5 seconds after page load
-  window.addEventListener("DOMContentLoaded", () => {
-    setTimeout(() => openModal("welcomeModal"), 5000);
+  window.firebaseSignOut = function() {
+    signOut(auth).then(() => {
+      closeModal("loginModal");
+    });
+  };
+
+  onAuthStateChanged(auth, (user) => {
+    const guestView = document.getElementById("authGuestView");
+    const userView = document.getElementById("authUserView");
+    const navBtn = document.getElementById("navAuthBtn");
+    const navGreeting = document.getElementById("navUserGreeting");
+
+    if (user) {
+      document.getElementById("profileName").textContent = user.displayName || user.email.split('@')[0];
+      document.getElementById("profileEmail").textContent = user.email;
+      document.getElementById("profileAvatar").src = user.photoURL || "https://api.dicebear.com/7.x/bottts/svg?seed=" + user.uid;
+      
+      guestView.style.display = "none";
+      userView.style.display = "block";
+
+      navGreeting.textContent = "Hi, " + (user.displayName || user.email.split('@')[0]);
+      navBtn.textContent = "View Profile";
+    } else {
+      guestView.style.display = "block";
+      userView.style.display = "none";
+      navGreeting.textContent = "";
+      navBtn.textContent = "Sign In";
+    }
   });
 
-  // Optional: track sign-in state across the site
-  onAuthStateChanged(auth, (user) => {
-    if (user) {
-      console.log("Logged in as:", user.email);
-    }
+  window.addEventListener("DOMContentLoaded", () => {
+    setTimeout(() => {
+      if (!auth.currentUser) {
+        openModal("welcomeModal");
+      }
+    }, 5000);
   });
 </script>
 
