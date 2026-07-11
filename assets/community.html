@@ -3,69 +3,59 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Community Forum</title>
-  <link rel="stylesheet" href="css/custom-features.css">
+  <title>Community Hub</title>
+  <link rel="stylesheet" href="main.css">
   <style>
-    body { font-family: system-ui; background:#171123; color:#e2daf0; padding:20px; }
-    .box { max-width:600px; margin:0 auto; background:#1e162e; padding:20px; border-radius:12px; border:1px solid #4a3b68; }
-    .rules { background:rgba(190,163,255,0.1); padding:10px; border-radius:8px; font-size:0.85rem; margin-bottom:15px; }
-    input { width:80%; padding:10px; background:#251c3a; color:#fff; border:1px solid #4a3b68; border-radius:8px; }
+    .panel { max-width:600px; margin:25px auto; background:var(--color-bg-soft); padding:20px; border-radius:12px; border:1px solid var(--color-line); }
+    .rules-banner { background:rgba(163,128,255,0.1); border-left:4px solid var(--color-accent); padding:10px; border-radius:6px; font-size:0.85rem; margin-bottom:15px; }
+    .msg-card { background:rgba(255,255,255,0.03); padding:10px; border-radius:8px; margin-top:8px; display:flex; justify-content:space-between; align-items:center; }
   </style>
 </head>
 <body>
-<div class="box">
-  <a href="dashboard.html" style="color:#bfa3ff; text-decoration:none;">&larr; Back to Dashboard</a>
-  <h2>Community Hub 🤝</h2>
+<div class="panel">
+  <div style="display:flex; justify-content:space-between; align-items:center;">
+    <a href="dashboard.html" style="color:var(--color-accent); font-weight:600;">&larr; Back to Dashboard</a>
+  </div>
+  <h2>Reader Community Room 🤝</h2>
   
-  <div class="rules">
-    <strong>📜 Forum Rules:</strong> Be respectful, absolutely no hate speech, protect reader privacy, keep it focused on storytelling!
+  <div class="rules-banner">
+    <strong>📜 Community Regulations:</strong> Please remain incredibly polite, maintain structural book discussions, and explicitly protect privacy.
   </div>
 
-  <div id="chatBox" style="height:250px; overflow-y:auto; background:#130e1c; padding:10px; border-radius:8px; margin-bottom:10px;"></div>
-  
-  <div style="display:flex; gap:10px;">
-    <input type="text" id="forumInput" placeholder="Say something to the community...">
-    <button class="pill-btn" onclick="sendGroupMessage()">Send</button>
-  </div>
+  <textarea id="forumMsg" placeholder="Share a message with the group..."></textarea>
+  <button class="pill-btn" style="width:100%;" onclick="sendCommunityMsg()">Send to Feed</button>
+
+  <div id="forumFeed" style="margin-top:20px;"></div>
 </div>
 
-<script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-  import { getAuth } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-  import { getDatabase, ref, push, onValue } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
-
-  const firebaseConfig = {
-    apiKey: "AIzaSyALh5lDBnHK69BORMhh3mM9tZiOeFdomm0",
-    authDomain: "website-git.firebaseapp.com",
-    projectId: "website-git",
-    databaseURL: "https://website-git-default-rtdb.firebaseio.com/"
-  };
-
-  const app = initializeApp(firebaseConfig);
-  const db = getDatabase(app);
-  const auth = getAuth(app);
-
-  window.sendGroupMessage = () => {
-    const text = document.getElementById("forumInput").value;
-    if(!text.trim()) return;
-    const user = auth.currentUser;
-    const name = user ? (user.displayName || user.email.split('@')[0]) : "Guest Reader";
-    
-    push(ref(db, 'forum'), { user: name, text: text });
-    document.getElementById("forumInput").value = "";
-  };
-
-  onValue(ref(db, 'forum'), (snapshot) => {
-    const chatBox = document.getElementById("chatBox");
-    chatBox.innerHTML = "";
-    snapshot.forEach((child) => {
-      const data = child.val();
-      const p = document.createElement("p");
-      p.innerHTML = `<strong style="color:#bfa3ff">${data.user}:</strong> ${data.text}`;
-      chatBox.appendChild(p);
+<script>
+  function renderForum() {
+    const posts = JSON.parse(localStorage.getItem("forum_posts") || "[]");
+    const feed = document.getElementById("forumFeed");
+    feed.innerHTML = "";
+    posts.forEach((item, i) => {
+      const msg = document.createElement("div");
+      msg.className = "msg-card";
+      msg.innerHTML = `<span><strong>Member:</strong> ${item}</span><button class="pill-btn" style="background:#ff6b6b!important;" onclick="deleteForumPost(${i})">Delete</button>`;
+      feed.appendChild(msg);
     });
-    chatBox.scrollTop = chatBox.scrollHeight;
-  });
+  }
+  window.sendCommunityMsg = () => {
+    const val = document.getElementById("forumMsg").value.trim();
+    if(!val) return;
+    const posts = JSON.parse(localStorage.getItem("forum_posts") || "[]");
+    posts.push(val);
+    localStorage.setItem("forum_posts", JSON.stringify(posts));
+    document.getElementById("forumMsg").value = "";
+    renderForum();
+  };
+  window.deleteForumPost = (i) => {
+    const posts = JSON.parse(localStorage.getItem("forum_posts") || "[]");
+    posts.splice(i, 1);
+    localStorage.setItem("forum_posts", JSON.stringify(posts));
+    renderForum();
+  };
+  document.addEventListener("DOMContentLoaded", renderForum);
 </script>
 </body>
 </html>
