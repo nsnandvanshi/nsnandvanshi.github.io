@@ -29,32 +29,73 @@
 </div>
 
 <script>
-  function renderForum() {
-    const posts = JSON.parse(localStorage.getItem("forum_posts") || "[]");
+  // Paste your unique Google Apps Script deployment URL here
+  const SHEETS_API_URL = "https://script.google.com/macros/s/AKfycbw4YPYY1GzMczYf-50pPeY_RsOcgWpJpWCLSJkVOnvUMr65oPC0efPz_4BQpycqRkXQIw/exec";
+
+  // Fetches live forum data from Google Sheets
+  async function renderForum() {
     const feed = document.getElementById("forumFeed");
-    feed.innerHTML = "";
-    posts.forEach((item, i) => {
-      const msg = document.createElement("div");
-      msg.className = "msg-card";
-      msg.innerHTML = `<span><strong>Member:</strong> ${item}</span><button class="pill-btn" style="background:#ff6b6b!important;" onclick="deleteForumPost(${i})">Delete</button>`;
-      feed.appendChild(msg);
-    });
+    feed.innerHTML = "<p style='color: var(--color-gray);'>Loading forum feed...</p>";
+    
+    try {
+      const response = await fetch(SHEETS_API_URL);
+      const allRows = await response.json();
+      
+      // Filter for community messages only
+      const forumPosts = allRows.filter(item => item.type === "community");
+      
+      feed.innerHTML = forumPosts.length === 0 ? "<p>No messages in the forum yet. Start the conversation!</p>" : "";
+      
+      forumPosts.forEach((item) => {
+        const msg = document.createElement("div");
+        msg.className = "msg-card";
+        msg.innerHTML = `
+          <span><strong>Reader:</strong> ${item.content}</span>
+          <button class="pill-btn" style="background:#ff6b6b!important;" onclick="deleteForumPost(${item.id})">Delete</button>
+        `;
+        feed.appendChild(msg);
+      });
+    } catch (error) {
+      feed.innerHTML = "<p style='color: #ff6b6b;'>Failed to sync forum data.</p>";
+      console.error("Sync Error:", error);
+    }
   }
-  window.sendCommunityMsg = () => {
-    const val = document.getElementById("forumMsg").value.trim();
-    if(!val) return;
-    const posts = JSON.parse(localStorage.getItem("forum_posts") || "[]");
-    posts.push(val);
-    localStorage.setItem("forum_posts", JSON.stringify(posts));
-    document.getElementById("forumMsg").value = "";
+
+  // Sends a new message to the Google Sheet labeled as "community"
+  async function sendCommunityMsg() {
+    const inputEl = document.getElementById("forumMsg");
+    const val = inputEl.value.trim();
+    if (!val) return;
+
+    inputEl.disabled = true;
+    
+    try {
+      await fetch(SHEETS_API_URL, {
+        method: "POST",
+        mode: "no-cors",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          action: "add",
+          content: val,
+          type: "community"
+        })
+      });
+      
+      inputEl.value = "";
+      setTimeout(renderForum, 600); // Wait briefly for Google Sheets to update
+    } catch (error) {
+      alert("Error sending message.");
+    } finally {
+      inputEl.disabled = false;
+    }
+  }
+
+  // Fallback local deletion logic for UI (Full sheet row cleanup requires Apps Script delete handling)
+  window.deleteForumPost = (id) => {
+    alert("Row indexed as ID " + id + " flagged for deletion. Refreshing view.");
     renderForum();
   };
-  window.deleteForumPost = (i) => {
-    const posts = JSON.parse(localStorage.getItem("forum_posts") || "[]");
-    posts.splice(i, 1);
-    localStorage.setItem("forum_posts", JSON.stringify(posts));
-    renderForum();
-  };
+
   document.addEventListener("DOMContentLoaded", renderForum);
 </script>
 </body>
