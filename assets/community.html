@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Community Forum</title>
+  <link rel="stylesheet" href="css/custom-features.css">
+  <style>
+    body { font-family: system-ui; background:#171123; color:#e2daf0; padding:20px; }
+    .box { max-width:600px; margin:0 auto; background:#1e162e; padding:20px; border-radius:12px; border:1px solid #4a3b68; }
+    .rules { background:rgba(190,163,255,0.1); padding:10px; border-radius:8px; font-size:0.85rem; margin-bottom:15px; }
+    input { width:80%; padding:10px; background:#251c3a; color:#fff; border:1px solid #4a3b68; border-radius:8px; }
+  </style>
+</head>
+<body>
+<div class="box">
+  <a href="dashboard.html" style="color:#bfa3ff; text-decoration:none;">&larr; Back to Dashboard</a>
+  <h2>Community Hub 🤝</h2>
+  
+  <div class="rules">
+    <strong>📜 Forum Rules:</strong> Be respectful, absolutely no hate speech, protect reader privacy, keep it focused on storytelling!
+  </div>
+
+  <div id="chatBox" style="height:250px; overflow-y:auto; background:#130e1c; padding:10px; border-radius:8px; margin-bottom:10px;"></div>
+  
+  <div style="display:flex; gap:10px;">
+    <input type="text" id="forumInput" placeholder="Say something to the community...">
+    <button class="pill-btn" onclick="sendGroupMessage()">Send</button>
+  </div>
+</div>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { getAuth } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+  import { getDatabase, ref, push, onValue } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyALh5lDBnHK69BORMhh3mM9tZiOeFdomm0",
+    authDomain: "website-git.firebaseapp.com",
+    projectId: "website-git",
+    databaseURL: "https://website-git-default-rtdb.firebaseio.com/"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getDatabase(app);
+  const auth = getAuth(app);
+
+  window.sendGroupMessage = () => {
+    const text = document.getElementById("forumInput").value;
+    if(!text.trim()) return;
+    const user = auth.currentUser;
+    const name = user ? (user.displayName || user.email.split('@')[0]) : "Guest Reader";
+    
+    push(ref(db, 'forum'), { user: name, text: text });
+    document.getElementById("forumInput").value = "";
+  };
+
+  onValue(ref(db, 'forum'), (snapshot) => {
+    const chatBox = document.getElementById("chatBox");
+    chatBox.innerHTML = "";
+    snapshot.forEach((child) => {
+      const data = child.val();
+      const p = document.createElement("p");
+      p.innerHTML = `<strong style="color:#bfa3ff">${data.user}:</strong> ${data.text}`;
+      chatBox.appendChild(p);
+    });
+    chatBox.scrollTop = chatBox.scrollHeight;
+  });
+</script>
+</body>
+</html>
