@@ -3,55 +3,100 @@ layout: default
 title: Home
 ---
 
-<link rel="stylesheet" href="{{ '/assets/main.css' | relative_url }}">
-<link rel="icon" href="{{ '/assets/images/logo.jpg' | relative_url }}">
-</head>
-<body>
+<!-- ==================== HEADER OVERRIDES & AUTH LIGHT STYLING ==================== -->
+<style>
+  /* Force the existing theme logo to stay at a clean, readable scale */
+  .site-header img, .brand img, a.brand img {
+    max-height: 50px !important;
+    width: auto !important;
+    object-fit: contain !important;
+  }
 
-<header class="site-header">
-  <div class="wrap" style="display: flex; align-items: center; justify-content: space-between;">
-    <a class="brand" href="{{ '/' | relative_url }}" style="max-height: 55px; display: inline-block;">
-      <!-- Added explicit inline style to guarantee the logo stays small -->
-      <img src="{{ '/assets/images/logo.jpg' | relative_url }}" alt="{{ site.author }} logo" style="max-height: 55px; width: auto; object-fit: contain; display: block;">
-    </a>
-    <div class="nav-horizontal-links">
-      <a href="#about" class="pill-btn" style="background:transparent!important; color:var(--color-ink)!important; margin-right: 10px;">About</a>
-      <a href="#books" class="pill-btn" style="background:transparent!important; color:var(--color-ink)!important; margin-right: 10px;">Bibliography</a>
-      <span id="navUserGreeting" style="font-size: 0.9rem; margin-right: 5px;"></span>
-      <button id="navAuthBtn" class="pill-btn" onclick="handleNavAuthClick()">Sign In</button>
-    </div>
+  /* Inline layout correction to keep auth components level with theme navigation elements */
+  .auth-nav-inline {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    margin-left: 15px;
+    vertical-align: middle;
+  }
+  
+  .auth-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.6);
+    backdrop-filter: blur(4px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 3000;
+  }
+
+  .glass-modal {
+    background: #1a1625;
+    border: 1px solid rgba(255,255,255,0.1);
+    padding: 2.5rem 2rem;
+    border-radius: 16px;
+    width: 90%;
+    max-width: 360px;
+    text-align: center;
+    color: #fff;
+  }
+
+  .glass-modal input {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 12px;
+    border: 1px solid rgba(255,255,255,0.2);
+    background: rgba(255,255,255,0.05);
+    border-radius: 8px;
+    color: #fff;
+    box-sizing: border-box;
+  }
+</style>
+
+<!-- Appends reader system access markers cleanly into the page line flow -->
+<div class="wrap" style="text-align: right; padding-top: 10px;">
+  <div class="auth-nav-inline">
+    <a href="#about" style="color: inherit; text-decoration: none; font-size: 0.9rem; margin-right: 10px;">About</a>
+    <a href="#books" style="color: inherit; text-decoration: none; font-size: 0.9rem; margin-right: 10px;">Bibliography</a>
+    <span id="navUserGreeting" style="font-size: 0.9rem;"></span>
+    <button id="navAuthBtn" class="pill-btn" onclick="handleNavAuthClick()">Sign In</button>
   </div>
-</header>
+</div>
 
-<!-- Auth Popups -->
+<!-- ==================== INTERACTIVE SYSTEM MODALS ==================== -->
 <div id="welcomeModal" class="auth-overlay" style="display:none;">
   <div class="glass-modal">
     <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">✨</div>
     <h2>Welcome, Reader!</h2>
-    <p>Join my personal network to track premium release details and use our reader walls.</p>
+    <p style="font-size: 0.9rem; color: #ccc; margin-bottom: 1.5rem;">Join my personal network to track premium release details and use our reader walls.</p>
     <button class="pill-btn" style="width: 100%;" onclick="closeModal('welcomeModal'); openModal('loginModal');">Get Started</button>
   </div>
 </div>
 
 <div id="loginModal" class="auth-overlay" style="display:none;">
-  <div class="glass-modal">
-    <h2 id="authTitle">Sign In</h2>
-    <p id="authSubtitle" style="font-size:0.85rem; margin-bottom:15px;">Access your reader features</p>
+  <div class="glass-modal" style="position: relative;">
+    <button onclick="closeModal('loginModal')" style="position: absolute; top: 15px; right: 20px; background: none; border: none; color: #fff; font-size: 1.5rem; cursor: pointer;">&times;</button>
+    <h2 id="authTitle" style="margin-top: 10px;">Sign In</h2>
+    <p id="authSubtitle" style="font-size:0.85rem; color: #aaa; margin-bottom:20px;">Access your reader features</p>
     
-    <button class="pill-btn" style="width: 100%; background: #fff !important; color: #000 !important; margin-bottom: 12px;" onclick="firebaseGoogleAuth()">Continue with Google</button>
+    <button class="pill-btn" style="width: 100%; background: #fff !important; color: #000 !important; margin-bottom: 15px; font-weight: 600;" onclick="firebaseGoogleAuth()">Continue with Google</button>
     
+    <div style="margin: 15px 0; color: #666; font-size: 0.8rem;">OR</div>
+
     <input type="email" id="authEmail" placeholder="Email Address">
     <input type="password" id="authPassword" placeholder="Password">
     <div id="confirmPasswordArea" style="display: none;">
       <input type="password" id="authConfirmPassword" placeholder="Confirm Password">
     </div>
     
-    <p id="authError" style="color: #ff6b6b; font-size: 0.85rem;"></p>
-    <button id="primaryAuthActionBtn" class="pill-btn" style="width: 100%;" onclick="handleEmailAuth()">Sign In</button>
+    <p id="authError" style="color: #ff6b6b; font-size: 0.85rem; min-height: 1.2rem;"></p>
+    <button id="primaryAuthActionBtn" class="pill-btn" style="width: 100%; margin-top: 5px;" onclick="handleEmailAuth()">Sign In</button>
     
-    <p style="font-size: 0.85rem; margin-top: 15px;">
+    <p style="font-size: 0.85rem; margin-top: 20px; color: #ccc;">
       <span id="authToggleMessage">New here?</span> 
-      <a href="javascript:void(0)" id="authToggleLink" onclick="toggleAuthMode()" style="color: var(--color-accent); font-weight:600;">Create account</a>
+      <a href="javascript:void(0)" id="authToggleLink" onclick="toggleAuthMode()" style="color: #bfa3ff; font-weight:600; text-decoration: none;">Create account</a>
     </p>
   </div>
 </div>
@@ -74,21 +119,25 @@ title: Home
 </section>
 
 <!-- ==================== ABOUT SECTION ==================== -->
-<section class="about" id="about">
+<section class="about" id="about" style="padding: 60px 0;">
   <div class="wrap">
     <span class="section-label">About</span>
-    <div class="about-body">
+    <div class="about-body" style="margin-top: 20px; line-height: 1.8;">
       <p>Writing is not just a profession for me — it is a way to explore the deep, often unspoken complexities of human emotion, love, and resilience.</p>
       <p>To date, I have published eight books — a milestone that represents countless late nights, deep reflections, and an unwavering commitment to the craft of storytelling. My work spans contemporary fiction and heartwarming romance, focusing on the quiet, powerful moments that connect us all: the intense and gripping dynamics of trust and obsession, the gentle magic of unexpected connections, the beauty of a quiet, enduring love.</p>
+      <p>I invite you to step into worlds filled with tender feelings, hopeful beginnings, and characters who face their darkest scars to find their brightest futures. I write for you, and I hope my words continue to leave you smiling and believing in the quiet power of the heart.</p>
     </div>
   </div>
 </section>
 
+{% include divider.html %}
+
 <!-- ==================== BIBLIOGRAPHY SECTION ==================== -->
-<section class="books" id="books">
+<section class="books" id="books" style="padding: 60px 0;">
   <div class="wrap">
     <span class="section-label">Bibliography</span>
-    <h2 class="section-heading">Books Collection</h2>
+    <h2 class="section-heading" style="margin-top: 10px; margin-bottom: 30px;">Books Collection</h2>
+    
     {% assign books = site.books | sort: 'order' %}
     {% if books.size > 0 %}
       <div class="books-grid">
@@ -114,6 +163,37 @@ title: Home
   </div>
 </section>
 
+{% include divider.html %}
+
+<!-- ==================== FORM PROCESSOR ENTRY (FORMSPREE) ==================== -->
+<section class="newsletter" id="newsletter" style="padding: 80px 0; background: rgba(255,255,255,0.02);">
+  <div class="wrap">
+    <div class="newsletter-card" style="max-width: 600px; margin: 0 auto; text-align: center;">
+      <h2>Stay close to the story</h2>
+      <p style="margin-bottom: 25px; color: #ccc;">Join the list for new releases, quiet updates, and the occasional behind-the-pages note.</p>
+      
+      <form action="https://formspree.io/f/{{ site.formspree_id }}" method="POST" style="display: flex; flex-direction: column; gap: 15px;">
+        <input type="text" name="name" placeholder="Your name" required style="padding: 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1); background: #110e1b; color: #fff;">
+        <input type="email" name="email" placeholder="Your email address" required style="padding: 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1); background: #110e1b; color: #fff;">
+        <button type="submit" class="pill-btn" style="width: 100%; padding: 14px; font-weight: 600;">Join the list</button>
+      </form>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== SITE FOOTER MATRIX ==================== -->
+<footer style="padding: 40px 0; border-top: 1px solid rgba(255,255,255,0.05); text-align: center;">
+  <div class="wrap">
+    <p style="font-size: 0.9rem; color: #888; margin-bottom: 15px;">&copy; 2026 N.S. Nandvanshi. All rights reserved.</p>
+    <div style="display: flex; justify-content: center; gap: 20px; font-size: 0.9rem;">
+      <a href="https://instagram.com" target="_blank" rel="noopener" style="color: #bfa3ff; text-decoration: none;">Instagram</a>
+      <a href="https://linkedin.com" target="_blank" rel="noopener" style="color: #bfa3ff; text-decoration: none;">LinkedIn</a>
+      <a href="https://medium.com" target="_blank" rel="noopener" style="color: #bfa3ff; text-decoration: none;">Medium</a>
+    </div>
+  </div>
+</footer>
+
+<!-- ==================== INTEGRATED FIREBASE UTILITIES MODULE ==================== -->
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
   import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
@@ -143,36 +223,41 @@ title: Home
     document.getElementById("authTitle").textContent = isSignInMode ? "Sign In" : "Create Account";
     document.getElementById("confirmPasswordArea").style.display = isSignInMode ? "none" : "block";
     document.getElementById("primaryAuthActionBtn").textContent = isSignInMode ? "Sign In" : "Register";
+    document.getElementById("authToggleMessage").textContent = isSignInMode ? "New here?" : "Already verified?";
+    document.getElementById("authToggleLink").textContent = isSignInMode ? "Create account" : "Sign In";
   };
 
   window.handleEmailAuth = () => {
     const email = document.getElementById("authEmail").value;
     const password = document.getElementById("authPassword").value;
     const errorEl = document.getElementById("authError");
+    errorEl.textContent = "";
     
     if(isSignInMode) {
       signInWithEmailAndPassword(auth, email, password)
         .then(() => window.location.href = "{{ '/assets/dashboard.html' | relative_url }}")
-        .catch(err => errorEl.textContent = err.message);
+        .catch(err => errorEl.textContent = err.message.replace("Firebase: ", ""));
     } else {
       if(password !== document.getElementById("authConfirmPassword").value) {
-        errorEl.textContent = "Passwords match error."; return;
+        errorEl.textContent = "Passwords do not match."; return;
       }
       createUserWithEmailAndPassword(auth, email, password)
         .then(() => window.location.href = "{{ '/assets/dashboard.html' | relative_url }}")
-        .catch(err => errorEl.textContent = err.message);
+        .catch(err => errorEl.textContent = err.message.replace("Firebase: ", ""));
     }
   };
 
   window.firebaseGoogleAuth = () => {
     signInWithPopup(auth, googleProvider).then(() => {
       window.location.href = "{{ '/assets/dashboard.html' | relative_url }}";
+    }).catch(err => {
+      document.getElementById("authError").textContent = err.message;
     });
   };
 
   onAuthStateChanged(auth, (user) => {
     if(user) {
-      document.getElementById("navUserGreeting").textContent = "Hi, " + (user.displayName || "Reader");
+      document.getElementById("navUserGreeting").textContent = "Hi, " + (user.displayName || user.email.split('@')[0]);
       document.getElementById("navAuthBtn").textContent = "Dashboard";
     }
   });
