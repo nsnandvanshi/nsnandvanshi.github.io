@@ -476,3 +476,34 @@ title: Home
     </div>
   </div>
 </section>
+
+<div id="toastNotification" class="toast-card" style="display: none;">
+  <span style="font-size: 1.2rem;">🎉</span>
+  <div>
+    <strong>Profile Created!</strong>
+    <p style="margin: 2px 0 0; font-size: 0.85rem; color: #666;">Check your inbox for a welcome surprise.</p>
+  </div>
+</div>
+
+<style>
+  .toast-card {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    background: #fff;
+    border-left: 4px solid #222;
+    padding: 16px;
+    border-radius: 8px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    z-index: 3000;
+    font-family: inherit;
+    animation: slideIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+  }
+  @keyframes slideIn {
+    from { transform: translateX(120%); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
+  }
+</style>
