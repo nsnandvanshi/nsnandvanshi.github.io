@@ -5,15 +5,19 @@
    ========================================================= */
 
 :root {
-  --color-bg: #EDEAF8;
-  --color-bg-soft: #F5F3FB;
-  --color-surface: #FFFFFF;
-  --color-ink: #2A2A52;
-  --color-ink-soft: #4A4A72;
-  --color-accent: #9C5A6B;
-  --color-accent-soft: #C98A98;
-  --color-gray: #6E6B80;
-  --color-line: #D8D4EE;
+  --color-bg: #E3DFF6;          /* The exact soft purple background from your logo */
+  --color-accent: #2B4CBA;      /* The deep, vibrant ink-blue from your logo text & feather */
+  --color-ink: #101935;          /* Deep ink shadow for headers */
+  --color-surface: #F1EDFF;     /* Slightly lighter tint for cards/sections */
+  --color-line: #C9C2EC;        /* Border accent line color */
+  
+  /* Glassmorphism & Glow Styles for the new feature nodes */
+  --purple-glass-base: rgba(241, 237, 255, 0.4);
+  --purple-glass-solid: rgba(246, 244, 255, 0.96);
+  --neon-border-glow: rgba(43, 76, 186, 0.2);
+  --pastel-red-alert: #E26D7D;
+}
+
 
   --font-display: "Cormorant Garamond", Georgia, serif;
   --font-body: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
