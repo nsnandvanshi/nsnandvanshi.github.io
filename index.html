@@ -4,13 +4,19 @@ title: Home
 ---
 
 <link rel="stylesheet" href="{{ '/assets/main.css' | relative_url }}">
+<link rel="icon" href="{{ '/assets/images/logo.jpg' | relative_url }}">
+</head>
+<body>
 
 <header class="site-header">
-  <div class="wrap">
-    <div class="brand">📚 N.S. Nandvanshi</div>
+  <div class="wrap" style="display: flex; align-items: center; justify-content: space-between;">
+    <a class="brand" href="{{ '/' | relative_url }}" style="max-height: 55px; display: inline-block;">
+      <!-- Added explicit inline style to guarantee the logo stays small -->
+      <img src="{{ '/assets/images/logo.jpg' | relative_url }}" alt="{{ site.author }} logo" style="max-height: 55px; width: auto; object-fit: contain; display: block;">
+    </a>
     <div class="nav-horizontal-links">
-      <a href="#about" class="pill-btn" style="background:transparent!important; color:var(--color-ink)!important;">About</a>
-      <a href="#books" class="pill-btn" style="background:transparent!important; color:var(--color-ink)!important;">Bibliography</a>
+      <a href="#about" class="pill-btn" style="background:transparent!important; color:var(--color-ink)!important; margin-right: 10px;">About</a>
+      <a href="#books" class="pill-btn" style="background:transparent!important; color:var(--color-ink)!important; margin-right: 10px;">Bibliography</a>
       <span id="navUserGreeting" style="font-size: 0.9rem; margin-right: 5px;"></span>
       <button id="navAuthBtn" class="pill-btn" onclick="handleNavAuthClick()">Sign In</button>
     </div>
@@ -67,7 +73,7 @@ title: Home
   </div>
 </section>
 
-<!-- ==================== ABOUT SECTION (RESTORED) ==================== -->
+<!-- ==================== ABOUT SECTION ==================== -->
 <section class="about" id="about">
   <div class="wrap">
     <span class="section-label">About</span>
@@ -78,7 +84,7 @@ title: Home
   </div>
 </section>
 
-<!-- ==================== BIBLIOGRAPHY SECTION (RESTORED) ==================== -->
+<!-- ==================== BIBLIOGRAPHY SECTION ==================== -->
 <section class="books" id="books">
   <div class="wrap">
     <span class="section-label">Bibliography</span>
@@ -89,8 +95,11 @@ title: Home
         {% for book in books %}
           <div class="book-card">
             <div class="book-cover">
-              {% if book.cover %}<img src="{{ book.cover | relative_url }}" alt="{{ book.title }}">
-              {% else % class="book-cover-placeholder"}{{ book.title }}{% endif %}
+              {% if book.cover %}
+                <img src="{{ book.cover | relative_url }}" alt="{{ book.title }}">
+              {% else %}
+                <span class="book-cover-placeholder">{{ book.title }}</span>
+              {% endif %}
             </div>
             <div class="book-card-body">
               <h3>{{ book.title }}</h3>
