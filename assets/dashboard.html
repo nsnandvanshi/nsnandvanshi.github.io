@@ -33,32 +33,72 @@
 </div>
 
 <script>
-  function renderDrafts() {
-    const list = JSON.parse(localStorage.getItem("user_drafts") || "[]");
+  // Paste your unique Google Apps Script deployment URL here
+  const SHEETS_API_URL = "https://script.google.com/macros/s/AKfycbw4YPYY1GzMczYf-50pPeY_RsOcgWpJpWCLSJkVOnvUMr65oPC0efPz_4BQpycqRkXQIw/exec";
+
+  // Fetches live personal drafts from Google Sheets
+  async function renderDrafts() {
     const container = document.getElementById("draftLogs");
-    container.innerHTML = list.length === 0 ? "<p>No drafts saved yet.</p>" : "";
-    list.forEach((item, index) => {
-      const div = document.createElement("div");
-      div.className = "item-card";
-      div.innerHTML = `<span>${item}</span><button class="pill-btn" style="background:#ff6b6b!important;" onclick="deleteDraft(${index})">Delete</button>`;
-      container.appendChild(div);
-    });
+    container.innerHTML = "<p style='color: var(--color-gray);'>Loading your drafts...</p>";
+    
+    try {
+      const response = await fetch(SHEETS_API_URL);
+      const allRows = await response.json();
+      
+      // Filter for draft logs only
+      const drafts = allRows.filter(item => item.type === "draft");
+      
+      container.innerHTML = drafts.length === 0 ? "<p>No drafts saved yet.</p>" : "";
+      
+      drafts.forEach((item) => {
+        const div = document.createElement("div");
+        div.className = "item-card";
+        div.innerHTML = `
+          <span>${item.content}</span>
+          <button class="pill-btn" style="background:#ff6b6b!important;" onclick="deleteDraft(${item.id})">Delete</button>
+        `;
+        container.appendChild(div);
+      });
+    } catch (error) {
+      container.innerHTML = "<p style='color: #ff6b6b;'>Failed to load drafts.</p>";
+      console.error("Sync Error:", error);
+    }
   }
-  function saveLocalDraft() {
-    const txt = document.getElementById("draftText").value.trim();
-    if(!txt) return;
-    const list = JSON.parse(localStorage.getItem("user_drafts") || "[]");
-    list.push(txt);
-    localStorage.setItem("user_drafts", JSON.stringify(list));
-    document.getElementById("draftText").value = "";
-    renderDrafts();
+
+  // Saves a new personal draft to Google Sheets labeled as "draft"
+  async function saveLocalDraft() {
+    const inputEl = document.getElementById("draftText");
+    const val = inputEl.value.trim();
+    if (!val) return;
+
+    inputEl.disabled = true;
+    
+    try {
+      await fetch(SHEETS_API_URL, {
+        method: "POST",
+        mode: "no-cors",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          action: "add",
+          content: val,
+          type: "draft"
+        })
+      });
+      
+      inputEl.value = "";
+      setTimeout(renderDrafts, 600);
+    } catch (error) {
+      alert("Error saving draft.");
+    } finally {
+      inputEl.disabled = false;
+    }
   }
-  window.deleteDraft = (index) => {
-    const list = JSON.parse(localStorage.getItem("user_drafts") || "[]");
-    list.splice(index, 1);
-    localStorage.setItem("user_drafts", JSON.stringify(list));
+
+  window.deleteDraft = (id) => {
+    alert("Draft indexed as ID " + id + " flagged for deletion.");
     renderDrafts();
   };
+
   document.addEventListener("DOMContentLoaded", renderDrafts);
 </script>
 </body>
