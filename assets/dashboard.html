@@ -3,77 +3,63 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Reader Dashboard</title>
-  <link rel="stylesheet" href="css/custom-features.css">
+  <title>Library Panel</title>
+  <link rel="stylesheet" href="main.css">
   <style>
-    body { font-family: -apple-system, BlinkMacSystemFont, sans-serif; padding: 20px; background: #171123; color: #e2daf0; }
-    .dash-container { max-width: 800px; margin: 0 auto; background: #1e162e; padding: 25px; border-radius: 16px; border: 1px solid rgba(180, 140, 252, 0.3); }
-    .feature-card { background: rgba(255,255,255,0.05); padding: 15px; border-radius: 10px; margin-bottom: 15px; border-left: 4px solid #bfa3ff; }
-    .btn-action { width: 100%; display: block; text-align: center; text-decoration: none; margin-top: 10px; }
+    .dash-box { max-width: 650px; margin: 30px auto; background: var(--color-bg-soft); padding: 25px; border-radius: 12px; border: 1px solid var(--color-line); }
+    .item-card { background: rgba(255,255,255,0.04); padding: 12px; border-radius: 8px; margin-top: 10px; border-left: 4px solid var(--color-accent); display:flex; justify-content:space-between; align-items:center; }
   </style>
 </head>
 <body>
-
-<div class="dash-container">
-  <h2>Welcome to your Library Space ✨</h2>
-  <p id="userEmailInfo" style="color: #a99cb8;"></p>
+<div class="dash-box">
+  <div style="display:flex; justify-content:space-between; align-items:center;">
+    <h2>Book Workspace Profile 🖥️</h2>
+    <a href="../index.html" class="pill-btn">Back to Home Layout</a>
+  </div>
   
-  <hr style="border: none; border-top: 1px solid rgba(180,140,252,0.2); margin: 20px 0;">
-
-  <!-- Feature 1: Confession Wall -->
-  <div class="feature-card">
-    <h3>📖 Anonymous Confession Wall</h3>
-    <p>Share your untold romantic expressions or book opinions completely anonymously.</p>
-    <a href="confessions.html" class="pill-btn btn-action">Open Confession Wall &rarr;</a>
+  <p style="margin-top:10px;">Access your active platform features seamlessly below:</p>
+  <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin-bottom:20px;">
+    <a href="confessions.html" class="pill-btn">Open Confessions Wall</a>
+    <a href="community.html" class="pill-btn">Open Community Spaces</a>
   </div>
 
-  <!-- Feature 2: Community Forum -->
-  <div class="feature-card">
-    <h3>🤝 Reader Community Hub</h3>
-    <p>Interact with fellow readers. Be polite, share rules, and talk about your favorite arcs.</p>
-    <a href="community.html" class="pill-btn btn-action">Enter Forum Space &rarr;</a>
-  </div>
+  <hr style="border:none; border-top:1px solid var(--color-line);">
+  
+  <h3>✍️ Personal Creative Drafts Manager</h3>
+  <textarea id="draftText" placeholder="Write a draft story log, review summary or journal here..."></textarea>
+  <button class="pill-btn" style="width:100%;" onclick="saveLocalDraft()">Save Local Draft</button>
 
-  <!-- Account & Support Blocks -->
-  <div class="feature-card">
-    <h3>📢 New Release Tracking</h3>
-    <p>You have access to 8 live book metrics and pre-order drops.</p>
-  </div>
-
-  <div class="feature-card" style="border-left-color: #ff6b6b;">
-    <h3>📬 Need Help?</h3>
-    <!-- Corrected Help Mailbox -->
-    <p>Contact Customer Care directly at: <a href="mailto:help.nsnandvanshi@gmail.com" style="color: #bfa3ff; font-weight: 600;">help.nsnandvanshi@gmail.com</a></p>
-  </div>
-
-  <button class="pill-btn" style="background: #ff6b6b !important; color:#fff !important; width:100%; margin-top:20px;" onclick="logOut()">Sign Out</button>
+  <div id="draftLogs" style="margin-top:15px;"></div>
 </div>
 
-<script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-  import { getAuth, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-
-  const firebaseConfig = {
-    apiKey: "AIzaSyALh5lDBnHK69BORMhh3mM9tZiOeFdomm0",
-    authDomain: "website-git.firebaseapp.com",
-    projectId: "website-git",
-    appId: "1:687842970832:web:de4db9f241209913aaa2d5"
+<script>
+  function renderDrafts() {
+    const list = JSON.parse(localStorage.getItem("user_drafts") || "[]");
+    const container = document.getElementById("draftLogs");
+    container.innerHTML = list.length === 0 ? "<p>No drafts saved yet.</p>" : "";
+    list.forEach((item, index) => {
+      const div = document.createElement("div");
+      div.className = "item-card";
+      div.innerHTML = `<span>${item}</span><button class="pill-btn" style="background:#ff6b6b!important;" onclick="deleteDraft(${index})">Delete</button>`;
+      container.appendChild(div);
+    });
+  }
+  function saveLocalDraft() {
+    const txt = document.getElementById("draftText").value.trim();
+    if(!txt) return;
+    const list = JSON.parse(localStorage.getItem("user_drafts") || "[]");
+    list.push(txt);
+    localStorage.setItem("user_drafts", JSON.stringify(list));
+    document.getElementById("draftText").value = "";
+    renderDrafts();
+  }
+  window.deleteDraft = (index) => {
+    const list = JSON.parse(localStorage.getItem("user_drafts") || "[]");
+    list.splice(index, 1);
+    localStorage.setItem("user_drafts", JSON.stringify(list));
+    renderDrafts();
   };
-
-  const app = initializeApp(firebaseConfig);
-  const auth = getAuth(app);
-
-  onAuthStateChanged(auth, (user) => {
-    if(!user) {
-      window.location.href = "../index.html";
-    } else {
-      document.getElementById("userEmailInfo").textContent = "Logged in as: " + user.email;
-    }
-  });
-
-  window.logOut = () => {
-    signOut(auth).then(() => window.location.href = "../index.html");
-  };
+  document.addEventListener("DOMContentLoaded", renderDrafts);
 </script>
 </body>
 </html>
