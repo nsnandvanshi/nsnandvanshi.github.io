@@ -84,7 +84,8 @@ img { max-width: 100%; display: block; }
 }
 
 /* Restricts the massive logo graphic layout dynamically */
-header img, .icon img {
+header img, 
+.icon {
   max-height: 60px !important; 
   width: auto !important;
   object-fit: contain;
