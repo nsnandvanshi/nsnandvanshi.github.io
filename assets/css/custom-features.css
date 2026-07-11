@@ -13,6 +13,36 @@ header, .site-header, .nav-bar {
   border-bottom: 1px solid rgba(180, 140, 252, 0.2);
 }
 
+<link rel="stylesheet" href="{{ '/assets/main.css' | relative_url }}">
+  <link rel="icon" href="{{ '/assets/images/logo.jpg' | relative_url }}">
+</head>
+<body>
+
+  <!-- FORCE LOGO TO SHRINK BY OVERRIDING CSS SYSTEM STYLES -->
+  <style>
+    header.site-header a.brand img, 
+    .brand img, 
+    .site-header img {
+      max-height: 55px !important;
+      width: auto !important;
+      display: inline-block !important;
+      object-fit: contain !important;
+    }
+    
+    /* Optional: Keeps the navigation layout clean if the row wraps weirdly */
+    .site-header .wrap {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+  </style>
+
+  <header class="site-header">
+    <div class="wrap">
+      <a class="brand" href="{{ '/' | relative_url }}">
+        <img src="{{ '/assets/images/logo.jpg' | relative_url }}" alt="{{ site.author }} logo">
+
+
 /* --- MOBILE FIRST NAVIGATION FIXED --- */
 .custom-nav-wrapper {
   max-width: 1200px;
