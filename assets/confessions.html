@@ -23,32 +23,69 @@
 </div>
 
 <script>
-  function renderConfessions() {
-    const data = JSON.parse(localStorage.getItem("wall_posts") || "[]");
+  // Paste your unique Google Apps Script deployment URL here
+  const SHEETS_API_URL = "https://script.google.com/macros/s/AKfycbw4YPYY1GzMczYf-50pPeY_RsOcgWpJpWCLSJkVOnvUMr65oPC0efPz_4BQpycqRkXQIw/exec";
+
+  // Fetches live data from Google Sheets instead of localStorage
+  async function renderConfessions() {
     const container = document.getElementById("confessContainer");
-    container.innerHTML = "";
-    data.forEach((item, idx) => {
-      const card = document.createElement("div");
-      card.className = "post-card";
-      card.innerHTML = `<span>${item}</span><button class="pill-btn" style="background:#ff6b6b!important;" onclick="removeConfession(${idx})">Delete</button>`;
-      container.appendChild(card);
-    });
+    container.innerHTML = "<p style='color: var(--color-gray);'>Loading live wall feed...</p>";
+    
+    try {
+      const response = await fetch(SHEETS_API_URL);
+      const allPosts = await response.json();
+      
+      // Filter out rows that belong specifically to this page type
+      const confessions = allPosts.filter(item => item.type === "confession");
+      
+      container.innerHTML = confessions.length === 0 ? "<p>No entries on the wall yet.</p>" : "";
+      
+      confessions.forEach((item) => {
+        const card = document.createElement("div");
+        card.className = "post-card";
+        card.innerHTML = `
+          <span>${item.content}</span>
+          <button class="pill-btn" style="background:#ff6b6b!important;" onclick="removeConfession(${item.id})">Delete</button>
+        `;
+        container.appendChild(card);
+      });
+    } catch (error) {
+      container.innerHTML = "<p style='color: #ff6b6b;'>Failed to sync with live data.</p>";
+      console.error("Sync Error:", error);
+    }
   }
-  window.addConfession = () => {
-    const val = document.getElementById("confessInput").value.trim();
-    if(!val) return;
-    const data = JSON.parse(localStorage.getItem("wall_posts") || "[]");
-    data.push(val);
-    localStorage.setItem("wall_posts", JSON.stringify(data));
-    document.getElementById("confessInput").value = "";
-    renderConfessions();
-  };
-  window.removeConfession = (idx) => {
-    const data = JSON.parse(localStorage.getItem("wall_posts") || "[]");
-    data.splice(idx, 1);
-    localStorage.setItem("wall_posts", JSON.stringify(data));
-    renderConfessions();
-  };
+
+  // Sends new posts straight into a new row in Google Sheets
+  async function addConfession() {
+    const inputEl = document.getElementById("confessInput");
+    const val = inputEl.value.trim();
+    if (!val) return;
+
+    inputEl.disabled = true; // Temporary lock while sending
+    
+    try {
+      await fetch(SHEETS_API_URL, {
+        method: "POST",
+        mode: "no-cors", // Prevents local CORS blocks on basic static deployments
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          action: "add",
+          content: val,
+          type: "confession"
+        })
+      });
+      
+      inputEl.value = "";
+      // Give Google Sheets half a second to complete recording before refreshing
+      setTimeout(renderConfessions, 600);
+    } catch (error) {
+      alert("Error posting submission.");
+    } finally {
+      inputEl.disabled = false;
+    }
+  }
+
+  // Initial trigger to paint data on screen open
   document.addEventListener("DOMContentLoaded", renderConfessions);
 </script>
 </body>
