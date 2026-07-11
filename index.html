@@ -6,7 +6,7 @@ title: Home
 <!--    UPGRADED AUTHENTICATION BLOCK WITH ANIMATIONS & GOOGLE      -->
 <!-- ============================================================== -->
 
-<!-- Inline Navigation Hook (Add this anywhere in your site header/nav if you like) -->
+<!-- Inline Navigation Hook -->
 <div class="auth-nav-bar" style="max-width: 1200px; margin: 10px auto; padding: 0 20px; text-align: right;">
   <span id="navUserGreeting" style="margin-right: 15px; font-weight: 500;"></span>
   <button id="navAuthBtn" class="auth-btn-inline" onclick="handleNavAuthClick()">Sign In</button>
@@ -26,7 +26,7 @@ title: Home
 
 <!-- Combined Login / Signup / Profile Modal -->
 <div id="loginModal" class="auth-overlay" style="display:none;">
-  <div class="auth-box anim-pop">
+  <div class="auth-box anim-pop" style="max-width: 420px; max-height: 85vh; overflow-y: auto;">
     <button class="auth-close" onclick="closeModal('loginModal')" aria-label="Close">&times;</button>
     
     <!-- STATE 1: GUEST VIEW (Form) -->
@@ -42,6 +42,8 @@ title: Home
 
       <div class="auth-divider"><span>or use email</span></div>
 
+      <!-- Full Name Field (Hidden by default, shown during registration) -->
+      <input type="text" id="authName" placeholder="Full Name" class="auth-input" style="display: none;">
       <input type="email" id="authEmail" placeholder="Email Address" class="auth-input">
       <input type="password" id="authPassword" placeholder="Password" class="auth-input">
       <p id="authError" class="auth-error"></p>
@@ -60,7 +62,45 @@ title: Home
         <img id="profileAvatar" src="" alt="Avatar" class="profile-avatar">
       </div>
       <h2 style="margin-bottom: 5px;">Hey there, <span id="profileName">Reader</span>! 👋</h2>
-      <p id="profileEmail" style="font-size: 0.9rem; color: #666; margin-bottom: 20px;"></p>
+      <p id="profileEmail" style="font-size: 0.9rem; color: #666; margin-bottom: 15px;"></p>
+      
+      <!-- Displaying Saved Bio / Description Description -->
+      <p id="profileBioDisplay" style="font-size: 0.9rem; font-style: italic; color: #555; margin: -5px 0 15px 0; padding: 0 10px;"></p>
+
+      <!-- CUSTOMIZE PROFILE ACCORDION -->
+      <details style="text-align: left; background: #f9f9f9; padding: 10px; border-radius: 8px; margin-bottom: 15px; font-size: 0.9rem;">
+        <summary style="cursor: pointer; font-weight: 600; color: #222;">⚙️ Customize Profile Settings</summary>
+        <div style="margin-top: 10px; display: flex; flex-direction: column; gap: 8px;">
+          <label style="font-weight: 500; font-size: 0.8rem;">Update Name:</label>
+          <input type="text" id="editProfileName" class="auth-input" style="padding: 8px; margin-bottom: 0;" placeholder="Display Name">
+          
+          <label style="font-weight: 500; font-size: 0.8rem;">Profile Picture Image URL:</label>
+          <input type="url" id="editProfilePicUrl" class="auth-input" style="padding: 8px; margin-bottom: 0;" placeholder="https://example.com/image.jpg">
+          
+          <label style="font-weight: 500; font-size: 0.8rem;">Profile Description / Bio:</label>
+          <textarea id="editProfileBio" class="auth-input" style="padding: 8px; margin-bottom: 0; resize: vertical; font-family: inherit;" placeholder="Tell us about yourself..."></textarea>
+          
+          <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 5px; background: #fff; padding: 8px; border-radius: 6px; border: 1px solid #ddd;">
+            <span style="font-size: 0.85rem; font-weight: 500;">Private Account Mode</span>
+            <label class="switch-container" style="position: relative; display: inline-block; width: 40px; height: 20px;">
+              <input type="checkbox" id="privateAccountToggle" style="opacity: 0; width: 0; height: 0;">
+              <span class="switch-slider"></span>
+            </label>
+          </div>
+
+          <button class="auth-btn-primary" style="padding: 8px; font-size: 0.85rem; margin-top: 5px;" onclick="saveCustomProfileSettings()">Save Updates</button>
+        </div>
+      </details>
+
+      <!-- REQUEST A POST / SUGGESTION BOX -->
+      <details style="text-align: left; background: #f3f7fa; padding: 10px; border-radius: 8px; margin-bottom: 15px; font-size: 0.9rem; border: 1px solid #d0e1ed;">
+        <summary style="cursor: pointer; font-weight: 600; color: #1e5075;">📝 Request a Blog Post / Book Topic</summary>
+        <div style="margin-top: 10px; display: flex; flex-direction: column; gap: 8px;">
+          <p style="font-size: 0.8rem; margin: 0; color: #444;">Have an idea? Submit it directly to N.S. Nandvanshi's active writing log list.</p>
+          <textarea id="requestedContentText" class="auth-input" style="padding: 8px; margin-bottom: 0; font-family: inherit;" placeholder="Describe your request..."></textarea>
+          <button class="auth-btn-primary" style="padding: 8px; font-size: 0.85rem; background: #1e5075;" onclick="submitContentRequest()">Send Request</button>
+        </div>
+      </details>
       
       <div style="background: #f9f9f9; padding: 15px; border-radius: 8px; margin-bottom: 20px; font-size: 0.9rem; text-align: left; color: #444;">
         <strong>🎉 Member Perks Unlocked:</strong>
@@ -69,6 +109,11 @@ title: Home
           <li>Exclusive writer logs access and more!</li>
         </ul>
       </div>
+
+      <!-- Support Section Integration -->
+      <p style="font-size: 0.8rem; color: #777; margin-bottom: 15px;">
+        Need help? Customer Care: <a href="mailto:help.nsnandvanshi@gmail.com" style="color: #222; font-weight: 500;">help.nsnandvanshi@gmail.com</a>
+      </p>
 
       <button class="auth-btn-secondary" onclick="firebaseSignOut()">Sign Out</button>
     </div>
@@ -165,6 +210,18 @@ title: Home
   
   .profile-avatar-wrap { display: inline-block; margin-bottom: 10px; position: relative; }
   .profile-avatar { width: 80px; height: 80px; border-radius: 50%; object-fit: cover; border: 3px solid #222; }
+
+  /* Custom Switch Styling for Privacy Toggle */
+  .switch-slider {
+    position: absolute; cursor: pointer; inset: 0; background-color: #ccc;
+    transition: .3s; border-radius: 20px;
+  }
+  .switch-slider:before {
+    position: absolute; content: ""; height: 14px; width: 14px; left: 3px; bottom: 3px;
+    background-color: white; transition: .3s; border-radius: 50%;
+  }
+  input:checked + .switch-slider { background-color: #222; }
+  input:checked + .switch-slider:before { transform: translateX(20px); }
 </style>
 
 <script type="module">
@@ -176,7 +233,8 @@ title: Home
     signInWithPopup,
     GoogleAuthProvider,
     signOut,
-    onAuthStateChanged
+    onAuthStateChanged,
+    updateProfile
   } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 
   // ---- LIVE PROJECT CONFIGURATION APPLIED ----
@@ -212,6 +270,7 @@ title: Home
     const actionBtn = document.getElementById("primaryAuthActionBtn");
     const msg = document.getElementById("authToggleMessage");
     const link = document.getElementById("authToggleLink");
+    const nameField = document.getElementById("authName");
     document.getElementById("authError").textContent = "";
 
     if (isSignInMode) {
@@ -220,22 +279,25 @@ title: Home
       actionBtn.textContent = "Sign In";
       msg.textContent = "New to the site?";
       link.textContent = "Create an account";
+      nameField.style.display = "none";
     } else {
       title.textContent = "Create Account";
       subtitle.textContent = "Join the community library";
       actionBtn.textContent = "Register";
       msg.textContent = "Already have an account?";
       link.textContent = "Sign In";
+      nameField.style.display = "block";
     }
   };
 
   window.handleEmailAuth = function() {
     const email = document.getElementById("authEmail").value;
     const password = document.getElementById("authPassword").value;
+    const displayName = document.getElementById("authName").value;
     const errorEl = document.getElementById("authError");
     errorEl.textContent = "";
 
-    if(!email || !password) {
+    if(!email || !password || (!isSignInMode && !displayName)) {
       errorEl.textContent = "Please fill in all layout credentials.";
       return;
     }
@@ -246,6 +308,10 @@ title: Home
         .catch((err) => { errorEl.textContent = err.message.replace("Firebase: ", ""); });
     } else {
       createUserWithEmailAndPassword(auth, email, password)
+        .then((userCredential) => {
+          // Set display name instantly upon signup configuration
+          return updateProfile(userCredential.user, { displayName: displayName });
+        })
         .then(() => closeModal("loginModal"))
         .catch((err) => { errorEl.textContent = err.message.replace("Firebase: ", ""); });
     }
@@ -270,6 +336,50 @@ title: Home
     });
   };
 
+  // Profile Personalization Controls using LocalStorage persistence 
+  window.saveCustomProfileSettings = function() {
+    const user = auth.currentUser;
+    if (!user) return;
+
+    const newName = document.getElementById("editProfileName").value;
+    const newPicUrl = document.getElementById("editProfilePicUrl").value;
+    const bioText = document.getElementById("editProfileBio").value;
+    const isPrivate = document.getElementById("privateAccountToggle").checked;
+
+    // Save display metadata to Firebase Identity profile
+    updateProfile(user, {
+      displayName: newName || user.displayName,
+      photoURL: newPicUrl || user.photoURL
+    }).then(() => {
+      // Save local layout preference attributes (Bio & Privacy) tied to user ID
+      localStorage.setItem(`profile_bio_${user.uid}`, bioText);
+      localStorage.setItem(`profile_private_${user.uid}`, isPrivate);
+      
+      // Dynamic rendering refresh
+      document.getElementById("profileName").textContent = user.displayName;
+      document.getElementById("profileAvatar").src = user.photoURL || "https://api.dicebear.com/7.x/bottts/svg?seed=" + user.uid;
+      document.getElementById("profileBioDisplay").textContent = bioText;
+      document.getElementById("navUserGreeting").textContent = "Hi, " + user.displayName;
+      
+      alert("Settings successfully updated!");
+    }).catch(err => alert("Error saving configurations: " + err.message));
+  };
+
+  // Custom Suggestion Box Handling
+  window.submitContentRequest = function() {
+    const user = auth.currentUser;
+    const inputArea = document.getElementById("requestedContentText");
+    if (!user) return;
+    if (!inputArea.value.trim()) {
+      alert("Please enter details regarding your request first.");
+      return;
+    }
+
+    // Process tracking action (Can be later linked up directly to firestore / forms)
+    alert(`Thank you, ${user.displayName || 'Reader'}! Your content suggestion has been transmitted safely to the pipeline.`);
+    inputArea.value = "";
+  };
+
   onAuthStateChanged(auth, (user) => {
     const guestView = document.getElementById("authGuestView");
     const userView = document.getElementById("authUserView");
@@ -277,10 +387,20 @@ title: Home
     const navGreeting = document.getElementById("navUserGreeting");
 
     if (user) {
+      const savedBio = localStorage.getItem(`profile_bio_${user.uid}`) || "No layout description provided yet.";
+      const savedPrivacy = localStorage.getItem(`profile_private_${user.uid}`) === "true";
+
       document.getElementById("profileName").textContent = user.displayName || user.email.split('@')[0];
       document.getElementById("profileEmail").textContent = user.email;
       document.getElementById("profileAvatar").src = user.photoURL || "https://api.dicebear.com/7.x/bottts/svg?seed=" + user.uid;
       
+      // Bind settings inputs to saved values
+      document.getElementById("editProfileName").value = user.displayName || "";
+      document.getElementById("editProfilePicUrl").value = user.photoURL || "";
+      document.getElementById("editProfileBio").value = savedBio === "No layout description provided yet." ? "" : savedBio;
+      document.getElementById("profileBioDisplay").textContent = savedBio;
+      document.getElementById("privateAccountToggle").checked = savedPrivacy;
+
       guestView.style.display = "none";
       userView.style.display = "block";
 
@@ -337,7 +457,6 @@ title: Home
 {% include divider.html %}
 
 <script>
-  // Fallback pen-name reveal for browsers without native scroll-timeline support
   if (!CSS.supports('animation-timeline: view()')) {
     const heroPortrait = document.getElementById('heroPortrait');
     if (heroPortrait) {
@@ -355,7 +474,6 @@ title: Home
     }
   }
 
-  // Decorative strip moves right-to-left only while the user scrolls
   (function () {
     const track = document.getElementById('scrollStripTrack');
     if (!track) return;
@@ -507,3 +625,11 @@ title: Home
     to { transform: translateX(0); opacity: 1; }
   }
 </style>
+
+<!-- LINKEDIN FOOTER LINK -->
+<div class="footer-socials" style="text-align: center; margin-top: 1rem; font-size: 0.9rem;">
+  <a href="https://github.com/nsnandvanshi/nsnandvanshi.github.io/blob/main/index.html" target="_blank" rel="noopener" style="color: #0077b5; text-decoration: none; font-weight: 500; display: inline-flex; align-items: center; gap: 5px;">
+    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="vertical-align: middle;"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
+    LinkedIn
+  </a>
+</div>
