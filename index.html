@@ -1,950 +1,543 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>The Sanctuary | Reader & Writer Hub</title>
-
-<!-- Core Design System Typography -->
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+---
+layout: default
+title: The Sanctuary | Reader & Writer Hub
+---
 
 <style>
-/* ==========================================================================
-1. GLOBAL SYSTEM VARIABLES & RESETS
-========================================================================== */
-:root {
---font-body: 'Plus Jakarta Sans', sans-serif;
---color-bg: #F9F8FC;
---color-surface: #FFFFFF;
---color-ink: #1C1B22;
---color-ink-soft: #5C5A66;
---color-accent: #6C5CE7;
---color-line: #E2DFEE;
---color-gray: #8A8799;
+  :root {
+    --purple-glass-base: rgba(243, 240, 252, 0.5);
+    --purple-glass-solid: rgba(250, 249, 254, 0.96);
+    --purple-glow-soft: rgba(108, 92, 231, 0.08);
+    --pastel-red-alert: #E26D7D;
+    --neon-border-glow: rgba(108, 92, 231, 0.25);
+    --color-surface: #FFFFFF;
+    --color-line: #E2DFEE;
+  }
 
-/* New Premium Glassmorphism Color Tokens */
---purple-glass-base: rgba(243, 240, 252, 0.5);
---purple-glass-solid: rgba(250, 249, 254, 0.96);
---purple-glow-soft: rgba(108, 92, 231, 0.08);
---pastel-red-alert: #E26D7D;
---neon-border-glow: rgba(108, 92, 231, 0.25);
-}
+  .nav-btn-pill {
+    font-family: inherit;
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: var(--color-ink, #1C1B22) !important;
+    background: var(--purple-glass-base);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid var(--neon-border-glow);
+    border-radius: 50px !important;
+    padding: 0.6rem 1.4rem;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    position: relative;
+    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  }
 
-* {
-box-sizing: border-box !important;
-margin: 0;
-padding: 0;
-flex-shrink: 0 !important; /* Anti-jitter structural enforcement */
-}
+  .nav-btn-pill::after, .db-card::after, .toast-alert-box::after, .fullscreen-blur-modal-content::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    padding: 1.5px;
+    background: linear-gradient(0deg, var(--color-accent, #6C5CE7), #A29BFE, var(--color-accent, #6C5CE7));
+    background-size: 100% 200%;
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none;
+    animation: neon-glow-flow 4s linear infinite;
+  }
 
-body {
-font-family: var(--font-body);
-background-color: var(--color-bg);
-color: var(--color-ink);
-line-height: 1.6;
-overflow-x: hidden;
--webkit-font-smoothing: antialiased;
-}
+  .nav-btn-pill:hover {
+    background: rgba(250, 249, 254, 0.85);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(108, 92, 231, 0.2);
+  }
 
-.wrap {
-width: 100%;
-max-width: 1200px;
-margin: 0 auto;
-padding: 0 24px;
-}
+  .dashboard-main-view {
+    display: none;
+    padding: 3rem 0;
+    background: rgba(243, 240, 252, 0.3);
+    border-top: 1px solid var(--color-line);
+    border-bottom: 1px solid var(--color-line);
+    margin-top: 3rem;
+  }
 
-a {
-text-decoration: none;
-color: inherit;
-transition: color 0.2s ease;
-}
+  .dashboard-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 28px;
+    margin-top: 2rem;
+  }
 
-/* ==========================================================================
-2. HEADER NAVIGATION & BRANDING SYSTEM
-========================================================================== */
-header {
-background: var(--purple-glass-base);
-backdrop-filter: blur(12px);
--webkit-backdrop-filter: blur(12px);
-border-bottom: 1px solid var(--color-line);
-position: sticky;
-top: 0;
-z-index: 10000;
-height: 80px;
-display: flex;
-align-items: center;
-}
+  @media (max-width: 850px) {
+    .dashboard-grid { grid-template-columns: 1fr; }
+  }
 
-header .wrap {
-display: flex;
-justify-content: space-between;
-align-items: center;
-width: 100%;
-}
+  .db-card {
+    background: var(--color-surface);
+    border: 1px solid var(--color-line);
+    border-radius: 20px;
+    padding: 2rem;
+    position: relative;
+    box-shadow: 0 4px 20px rgba(108, 92, 231, 0.02);
+    display: flex;
+    flex-direction: column;
+  }
 
-.brand {
-display: flex;
-align-items: center;
-}
+  .glass-input-node {
+    width: 100% !important;
+    height: 50px;
+    padding: 0 1.2rem;
+    background: rgba(255, 255, 255, 0.8) !important;
+    border: 1px solid var(--color-line) !important;
+    border-radius: 25px !important;
+    font-family: inherit;
+    font-size: 0.95rem;
+    outline: none !important;
+    transition: border-color 0.3s, box-shadow 0.3s;
+  }
 
-.brand img {
-height: 54px !important;
-width: auto !important;
-transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-}
+  .highlight-wrapper {
+    position: relative;
+    width: 100%;
+    height: 140px;
+    background: rgba(255, 255, 255, 0.8);
+    border: 1px solid var(--color-line);
+    border-radius: 16px;
+    overflow: hidden;
+    margin-bottom: 0.5rem;
+  }
 
-.brand:hover img {
-transform: scale(1.05);
-}
+  .highlight-layer, .highlight-textarea-node {
+    position: absolute;
+    inset: 0;
+    padding: 1rem;
+    font-family: inherit;
+    font-size: 0.95rem;
+    line-height: 1.6;
+    margin: 0;
+    box-sizing: border-box;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+  }
 
-.main-nav {
-display: flex;
-align-items: center;
-gap: 2rem;
-}
+  .highlight-layer { color: transparent !important; z-index: 1; pointer-events: none; overflow-y: auto; }
+  .highlight-textarea-node { z-index: 2; background: transparent !important; border: none !important; outline: none !important; resize: none; }
+  .soft-alert-word { background: rgba(226, 109, 125, 0.15); color: var(--pastel-red-alert) !important; font-weight: 700; border-radius: 4px; padding: 0 2px; }
 
-.main-nav a, .nav-text-btn {
-font-size: 0.95rem;
-font-weight: 500;
-color: var(--color-ink-soft);
-cursor: pointer;
-background: none;
-border: none;
-font-family: inherit;
-}
+  .rule-alert-pane {
+    max-height: 0;
+    opacity: 0;
+    overflow: hidden;
+    background: rgba(226, 109, 125, 0.06);
+    border-left: 3px solid var(--pastel-red-alert);
+    border-radius: 4px;
+    padding: 0 12px;
+    transition: all 0.4s ease;
+    font-size: 0.85rem;
+  }
 
-.main-nav a:hover, .nav-text-btn:hover {
-color: var(--color-accent);
-}
+  .crop-preview-box {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    border: 3px solid var(--color-surface);
+    box-shadow: 0 0 0 2px var(--color-accent, #6C5CE7);
+    overflow: hidden;
+    margin: 0 auto 1rem auto;
+  }
 
-/* Premium Pill Menu Button */
-.nav-btn-pill {
-font-family: var(--font-body);
-font-weight: 600;
-font-size: 0.9rem;
-color: var(--color-ink) !important;
-background: var(--purple-glass-base);
-backdrop-filter: blur(16px);
--webkit-backdrop-filter: blur(16px);
-border: 1px solid var(--neon-border-glow);
-border-radius: 50px !important;
-padding: 0.6rem 1.4rem;
-cursor: pointer;
-display: inline-flex;
-align-items: center;
-gap: 8px;
-position: relative;
-transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-}
+  .crop-preview-box img { width: 100%; height: 100%; object-fit: cover; }
 
-/* Continuous Flow Gradient Accent Loop */
-.nav-btn-pill::after, .db-card::after, .toast-alert-box::after, .fullscreen-blur-modal-content::after {
-content: '';
-position: absolute;
-inset: 0;
-border-radius: inherit;
-padding: 1.5px;
-background: linear-gradient(0deg, var(--color-accent), #A29BFE, var(--color-accent));
-background-size: 100% 200%;
--webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
--webkit-mask-composite: xor;
-mask-composite: exclude;
-pointer-events: none;
-animation: neon-glow-flow 4s linear infinite;
-}
+  .fullscreen-blur-modal {
+    position: fixed;
+    inset: 0;
+    background: rgba(28, 27, 34, 0.25);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    z-index: 999999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    padding: 24px;
+  }
 
-.nav-btn-pill:hover {
-background: rgba(250, 249, 254, 0.85);
-transform: translateY(-2px);
-box-shadow: 0 6px 20px rgba(108, 92, 231, 0.2);
-}
+  .fullscreen-blur-modal.active { opacity: 1; pointer-events: auto; }
 
-/* Navigation Action Dropdown */
-.nav-dropdown-container {
-position: relative;
-display: inline-block;
-}
+  .fullscreen-blur-modal-content {
+    background: var(--purple-glass-solid);
+    border: 1px solid var(--color-line);
+    border-radius: 28px;
+    width: 100%;
+    max-width: 480px;
+    padding: 3rem 2.5rem;
+    position: relative;
+    box-shadow: 0 20px 60px rgba(42, 42, 82, 0.15);
+    transform: scale(0.94);
+    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    text-align: center;
+  }
 
-.nav-dropdown {
-position: absolute;
-top: 120%;
-right: 0;
-width: 240px;
-background: var(--purple-glass-solid);
-backdrop-filter: blur(20px);
--webkit-backdrop-filter: blur(20px);
-border: 1px solid var(--color-line);
-border-radius: 16px;
-padding: 0.5rem;
-box-shadow: 0 10px 30px rgba(42, 42, 82, 0.1);
-display: none;
-z-index: 99999;
-opacity: 0;
-transform: translateY(-10px);
-transition: opacity 0.3s updates, transform 0.3s updates;
-}
+  .fullscreen-blur-modal.active .fullscreen-blur-modal-content { transform: scale(1); }
+  .modal-close-trigger { position: absolute; top: 24px; right: 24px; background: transparent; border: none; font-size: 1.6rem; cursor: pointer; color: #8A8799; line-height: 1; }
 
-.nav-dropdown.active {
-display: block;
-opacity: 1;
-transform: translateY(0);
-}
+  #magical-toast-hub { position: fixed; bottom: 30px; right: 30px; z-index: 9999999; display: flex; flex-direction: column; gap: 12px; pointer-events: none; }
 
-.nav-dropdown button, .nav-dropdown a {
-display: flex;
-align-items: center;
-gap: 10px;
-width: 100%;
-padding: 0.75rem 1rem;
-color: var(--color-ink) !important;
-font-size: 0.9rem;
-font-weight: 500;
-border: none;
-background: transparent;
-border-radius: 10px;
-text-align: left;
-cursor: pointer;
-}
+  .toast-alert-box {
+    pointer-events: auto;
+    width: 350px;
+    background: var(--purple-glass-solid);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid var(--neon-border-glow);
+    border-radius: 16px;
+    padding: 1.2rem;
+    box-shadow: 0 12px 40px rgba(42, 42, 82, 0.12);
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    transform: translateX(130%);
+    opacity: 0;
+    animation: slide-toast-in 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    position: relative;
+    overflow: hidden;
+  }
 
-.nav-dropdown button:hover, .nav-dropdown a:hover {
-background: rgba(108, 92, 231, 0.08);
-color: var(--color-accent) !important;
-}
+  .toast-countdown-bar {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 3px;
+    width: 100%;
+    background: linear-gradient(to right, #A29BFE, var(--color-accent, #6C5CE7));
+    transform-origin: left;
+    animation: drain-toast-time 5.5s linear forwards;
+  }
 
-/* ==========================================================================
-3. HERO SECTION STRUCTURE
-========================================================================== */
-.hero-section {
-padding: 5rem 0 3rem 0;
-text-align: center;
-}
+  .showcase-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 24px;
+    margin-top: 1.5rem;
+    text-align: left;
+  }
 
-.hero-eyebrow {
-display: inline-block;
-font-size: 0.85rem;
-font-weight: 700;
-text-transform: uppercase;
-letter-spacing: 0.1em;
-color: var(--color-accent);
-margin-bottom: 1rem;
-}
+  .showcase-card {
+    background: #fff;
+    border: 1px solid var(--color-line);
+    border-radius: 16px;
+    padding: 1.5rem;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.02);
+  }
 
-.hero-section h1 {
-font-size: 3.5rem;
-font-weight: 700;
-line-height: 1.2;
-letter-spacing: -0.02em;
-margin-bottom: 1.5rem;
-}
-
-.hero-section p {
-font-size: 1.2rem;
-color: var(--color-ink-soft);
-max-width: 600px;
-margin: 0 auto 2rem auto;
-}
-
-/* ==========================================================================
-4. CLIENT DASHBOARD ARRAYS & CONTENT WORKSPACE
-========================================================================== */
-.dashboard-main-view {
-display: none;
-padding: 3rem 0;
-background: rgba(243, 240, 252, 0.3);
-border-top: 1px solid var(--color-line);
-border-bottom: 1px solid var(--color-line);
-}
-
-.dashboard-grid {
-display: grid;
-grid-template-columns: 1fr 1fr;
-gap: 28px;
-margin-top: 2rem;
-}
-
-@media (max-width: 850px) {
-.dashboard-grid { grid-template-columns: 1fr; }
-.hero-section h1 { font-size: 2.5rem; }
-}
-
-.db-card {
-background: var(--color-surface);
-border: 1px solid var(--color-line);
-border-radius: 20px;
-padding: 2rem;
-position: relative;
-box-shadow: 0 4px 20px rgba(108, 92, 231, 0.02);
-display: flex;
-flex-direction: column;
-}
-
-/* Form Fields Framework (Fixed Size Constraints Against Focus Shifting) */
-.glass-input-node {
-width: 100% !important;
-height: 50px;
-padding: 0 1.2rem;
-background: rgba(255, 255, 255, 0.8) !important;
-border: 1px solid var(--color-line) !important;
-border-radius: 25px !important;
-font-family: var(--font-body);
-font-size: 0.95rem;
-color: var(--color-ink);
-outline: none !important;
-transition: border-color 0.3s, box-shadow 0.3s;
-}
-
-.glass-input-node:focus {
-border-color: var(--color-accent) !important;
-box-shadow: 0 0 0 3px rgba(108, 92, 231, 0.15) !important;
-}
-
-/* Live Mirroring Text Highlighter Overlay */
-.highlight-wrapper {
-position: relative;
-width: 100%;
-height: 140px;
-background: rgba(255, 255, 255, 0.8);
-border: 1px solid var(--color-line);
-border-radius: 16px;
-overflow: hidden;
-margin-bottom: 0.5rem;
-}
-
-.highlight-layer, .highlight-textarea-node {
-position: absolute;
-inset: 0;
-padding: 1rem;
-font-family: var(--font-body);
-font-size: 0.95rem;
-line-height: 1.6;
-margin: 0;
-box-sizing: border-box;
-white-space: pre-wrap;
-word-wrap: break-word;
-}
-
-.highlight-layer {
-color: transparent !important;
-z-index: 1;
-pointer-events: none;
-overflow-y: auto;
-}
-
-.highlight-textarea-node {
-z-index: 2;
-background: transparent !important;
-border: none !important;
-outline: none !important;
-resize: none;
-color: var(--color-ink);
-}
-
-/* Soft Pastel Rose Highlight Style */
-.soft-alert-word {
-background: rgba(226, 109, 125, 0.15);
-color: var(--pastel-red-alert) !important;
-font-weight: 700;
-border-radius: 4px;
-padding: 0 2px;
-}
-
-.rule-alert-pane {
-max-height: 0;
-opacity: 0;
-overflow: hidden;
-background: rgba(226, 109, 125, 0.06);
-border-left: 3px solid var(--pastel-red-alert);
-border-radius: 4px;
-padding: 0 12px;
-transition: all 0.4s ease;
-font-size: 0.85rem;
-line-height: 1.4;
-}
-
-/* Image Cropper Preview Layout Container */
-.crop-preview-box {
-width: 100px;
-height: 100px;
-border-radius: 50%;
-border: 3px solid var(--color-surface);
-box-shadow: 0 0 0 2px var(--color-accent);
-overflow: hidden;
-margin: 0 auto 1rem auto;
-background: var(--color-bg);
-}
-
-.crop-preview-box img {
-width: 100%;
-height: 100%;
-object-fit: cover;
-}
-
-/* ==========================================================================
-5. FULLSCREEN BLUR POPUP ENGINE ELEMENTS
-========================================================================== */
-.fullscreen-blur-modal {
-position: fixed;
-inset: 0;
-background: rgba(28, 27, 34, 0.25);
-backdrop-filter: blur(20px);
--webkit-backdrop-filter: blur(20px);
-z-index: 999999;
-display: flex;
-align-items: center;
-justify-content: center;
-opacity: 0;
-pointer-events: none;
-transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-padding: 24px;
-}
-
-.fullscreen-blur-modal.active {
-opacity: 1;
-pointer-events: auto;
-}
-
-.fullscreen-blur-modal-content {
-background: var(--purple-glass-solid);
-border: 1px solid var(--color-line);
-border-radius: 28px;
-width: 100%;
-max-width: 480px;
-padding: 3rem 2.5rem;
-position: relative;
-box-shadow: 0 20px 60px rgba(42, 42, 82, 0.15);
-transform: scale(0.94);
-transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-text-align: center;
-}
-
-.fullscreen-blur-modal.active .fullscreen-blur-modal-content {
-transform: scale(1);
-}
-
-.modal-close-trigger {
-position: absolute;
-top: 24px;
-right: 24px;
-background: transparent;
-border: none;
-font-size: 1.6rem;
-cursor: pointer;
-color: var(--color-gray);
-line-height: 1;
-}
-
-.modal-close-trigger:hover {
-color: var(--color-ink);
-}
-
-/* ==========================================================================
-6. WHIMSICAL NOTIFICATION TOAST ARCHITECTURE
-========================================================================== */
-#magical-toast-hub {
-position: fixed;
-bottom: 30px;
-right: 30px;
-z-index: 9999999;
-display: flex;
-flex-direction: column;
-gap: 12px;
-pointer-events: none;
-}
-
-.toast-alert-box {
-pointer-events: auto;
-width: 350px;
-background: var(--purple-glass-solid);
-backdrop-filter: blur(16px);
--webkit-backdrop-filter: blur(16px);
-border: 1px solid var(--neon-border-glow);
-border-radius: 16px;
-padding: 1.2rem;
-box-shadow: 0 12px 40px rgba(42, 42, 82, 0.12);
-display: flex;
-align-items: flex-start;
-gap: 14px;
-transform: translateX(130%);
-opacity: 0;
-animation: slide-toast-in 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-position: relative;
-overflow: hidden;
-}
-
-.toast-countdown-bar {
-position: absolute;
-bottom: 0;
-left: 0;
-height: 3px;
-width: 100%;
-background: linear-gradient(to right, #A29BFE, var(--color-accent));
-transform-origin: left;
-animation: drain-toast-time 5.5s linear forwards;
-}
-
-@keyframes neon-glow-flow {
-0% { background-position: 0% 0%; }
-100% { background-position: 0% 200%; }
-}
-@keyframes slide-toast-in {
-to { transform: translateX(0); opacity: 1; }
-}
-@keyframes drain-toast-time {
-from { transform: scaleX(1); }
-to { transform: scaleX(0); }
-}
+  @keyframes neon-glow-flow { 0% { background-position: 0% 0%; } 100% { background-position: 0% 200%; } }
+  @keyframes slide-toast-in { to { transform: translateX(0); opacity: 1; } }
+  @keyframes drain-toast-time { from { transform: scaleX(1); } to { transform: scaleX(0); } }
 </style>
-</head>
-<body>
 
-<!-- ==========================================================================
-CORE HEADER AREA
-========================================================================== -->
-<header>
-<div class="wrap">
-<a href="#" class="brand">
-<!-- Upgraded logo container configuration -->
-<img src="https://api.dicebear.com/7.x/shapes/svg?seed=sanctuary" alt="Sanctuary Logo">
-</a>
-
-<nav class="main-nav">
-<a href="#home">Home</a>
-<a href="#books">Books</a>
-<a href="#blog">Blogs</a>
-<button type="button" class="nav-text-btn" onclick="toggleModalView('newsletter-modal', true)">Newsletter</button>
-<a href="javascript:void(0)" onclick="handleCommunityAccessRequest()">Community</a>
-
-<!-- Profile Integration Container Dropdown -->
-<div class="nav-dropdown-container">
-<button class="nav-btn-pill" onclick="toggleNavigationDropdown(event)">
-<span id="nav-avatar-circle" style="width: 20px; height: 20px; background: var(--color-accent); border-radius: 50%; display: inline-block; vertical-align: middle; transition: background 0.3s ease;"></span>
-<span id="nav-btn-label">Account</span>
-<svg width="10" height="6" viewBox="0 0 10 6" fill="none" style="margin-left: 2px;"><path d="M1 1L5 5L9 1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-</button>
-
-<div class="nav-dropdown" id="account-dropdown-pane">
-<div id="dropdown-guest-links">
-<button onclick="toggleModalView('auth-modal', true);">🔑 Log In / Sign Up</button>
-</div>
-<div id="dropdown-user-links" style="display: none;">
-<button onclick="activateDashboardView();">📊 Access Dashboard</button>
-<button onclick="toggleModalView('newsletter-modal', true);">💌 Newsletter Portal</button>
-<button onclick="handleCommunityAccessRequest();">🏛️ Inner Sanctuary Wall</button>
-<hr style="border: 0; border-top: 1px solid var(--color-line); margin: 6px 0;">
-<button onclick="executeSignOutAction();" style="color: var(--pastel-red-alert) !important;">🚪 Log Out</button>
-</div>
-</div>
-</div>
-</nav>
-</div>
-</header>
-
-<main>
-<!-- ==========================================================================
-LANDING HERO DISPLAY VIEW
-========================================================================== -->
-<section class="hero-section" id="home">
-<div class="wrap">
-<span class="hero-eyebrow">A Safe Space for Devs & Readers</span>
-<h1>The Architecture of Quiet Thoughts</h1>
-<p>A zero-investment sanctuary built cleanly to log reading reflections, document creative technical journeys, and host private confessions.</p>
-<button class="nav-btn-pill" style="padding: 0.8rem 2.2rem; font-size: 1rem;" onclick="handleCommunityAccessRequest()">Enter The Sanctuary Workspace</button>
-</div>
+<!-- HERO HEADER BLOCK -->
+<section class="hero-section" style="text-align: center; padding: 4rem 0 2rem 0;">
+  <span style="color: #6C5CE7; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; font-size: 0.85rem;">A Safe Space for Devs & Readers</span>
+  <h1 style="font-size: 3.5rem; font-weight: 700; margin: 1rem 0;">The Architecture of Quiet Thoughts</h1>
+  <p style="color: #5C5A66; max-width: 600px; margin: 0 auto 2rem auto; font-size: 1.15rem;">A zero-investment sanctuary built cleanly to log reading reflections, document creative technical journeys, and host private confessions.</p>
+  <button class="nav-btn-pill" style="padding: 0.8rem 2.2rem; font-size: 1rem;" onclick="handleCommunityAccessRequest()">Enter The Sanctuary Workspace</button>
 </section>
 
-<!-- ==========================================================================
-CLIENT MAIN WORKSPACE DASHBOARD MATRIX
-========================================================================== -->
+<!-- DYNAMIC BOOKS COLLECTION BLOCK -->
+<section id="books" style="padding: 3rem 0; text-align: center;">
+  <h2 style="font-size: 2rem; font-weight: 700;">Featured Book Releases</h2>
+  <div class="showcase-grid">
+    {% for book in site.books %}
+      <div class="showcase-card">
+        {% if book.cover_image %}
+          <img src="{{ book.cover_image | relative_url }}" alt="{{ book.title }}" style="width: 100%; height: 220px; object-fit: cover; border-radius: 8px; margin-bottom: 1rem;">
+        {% endif %}
+        <h3 style="font-size: 1.25rem; font-weight: 600; margin-bottom: 0.5rem;">{{ book.title }}</h3>
+        <p style="font-size: 0.9rem; color: #5C5A66; margin-bottom: 1rem;">{{ book.description | strip_html | truncate: 120 }}</p>
+        <a href="{{ book.url | relative_url }}" style="color: #6C5CE7; font-weight: 600; font-size: 0.9rem;">Read Overview &rarr;</a>
+      </div>
+    {% endfor %}
+  </div>
+</section>
+
+<!-- DYNAMIC BLOG POSTS BLOCK -->
+<section id="blog" style="padding: 3rem 0; text-align: center;">
+  <h2 style="font-size: 2rem; font-weight: 700;">Sanctuary Engineering Logs</h2>
+  <div class="showcase-grid">
+    {% for post in site.posts %}
+      <div class="showcase-card">
+        <span style="font-size: 0.8rem; color: #8A8799;">{{ post.date | date: "%B %d, %Y" }}</span>
+        <h3 style="font-size: 1.25rem; font-weight: 600; margin: 0.5rem 0;">{{ post.title }}</h3>
+        <p style="font-size: 0.9rem; color: #5C5A66; margin-bottom: 1rem;">{{ post.excerpt | strip_html | truncate: 120 }}</p>
+        <a href="{{ post.url | relative_url }}" style="color: #6C5CE7; font-weight: 600; font-size: 0.9rem;">Open Log Entry &rarr;</a>
+      </div>
+    {% endfor %}
+  </div>
+</section>
+
+<!-- THE CORE PRIVACY DASHBOARD (INTEGRATED TARGET) -->
 <section class="dashboard-main-view" id="core-user-dashboard-canvas">
-<div class="wrap">
+  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem;">
+    <div>
+      <h2 style="font-weight: 700; font-size: 2.2rem; margin: 0;">Reader Workspace</h2>
+      <p style="color: #5C5A66; margin: 0;">Manage local profile details, log private text segments, and track community requests.</p>
+    </div>
+    <button class="nav-btn-pill" onclick="closeDashboardView()" style="background: transparent;">&larr; Exit Dashboard</button>
+  </div>
 
-<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem;">
-<div>
-<h2 style="font-weight: 700; font-size: 2.2rem; letter-spacing: -0.01em;">Reader Workspace</h2>
-<p style="color: var(--color-ink-soft); margin: 0;">Manage local profile details, log private text segments, and track community requests.</p>
-</div>
-<button class="nav-btn-pill" onclick="closeDashboardView()" style="background: transparent;">← Exit Dashboard</button>
-</div>
+  <div class="dashboard-grid">
+    
+    <div class="db-card">
+      <h3 style="font-weight: 700; font-size: 1.3rem; margin-bottom: 1rem;">Profile Customizer</h3>
+      <div class="crop-preview-box">
+        <img id="dashboard-avatar-display" src="{{ '/assets/images/author.png' | relative_url }}" alt="Profile Avatar Asset">
+      </div>
+      <div style="text-align: center; margin-bottom: 1.5rem;">
+        <label for="avatar-file-input" class="nav-btn-pill" style="font-size: 0.8rem; padding: 0.5rem 1.2rem;">
+          📸 Select Profile Asset
+        </label>
+        <input type="file" id="avatar-file-input" accept="image/*" onchange="processLocalProfileAvatarUpload(this)" style="display: none;">
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 10px;">
+        <input type="text" id="db-profile-username" placeholder="Display Pseudonym..." class="glass-input-node">
+        <input type="text" id="db-profile-bio" placeholder="Profile bio context..." class="glass-input-node">
+        <button type="button" class="nav-btn-pill" onclick="saveDashboardProfileChanges()" style="justify-content: center; margin-top: 6px; background: #6C5CE7; color: #fff !important;">Save Changes</button>
+      </div>
+    </div>
 
-<div class="dashboard-grid">
+    <div class="db-card">
+      <h3 style="font-weight: 700; font-size: 1.3rem; margin-bottom: 0.25rem;">Sanctuary Diary Logs</h3>
+      <p style="font-size: 0.85rem; color: #5C5A66; margin-bottom: 1.2rem;">Store reading insights, track milestones, and secure personal notes.</p>
+      <div style="display: flex; flex-direction: column; gap: 10px; flex-grow: 1;">
+        <input type="text" id="sanctuary-book-title" placeholder="Book Title Reference..." class="glass-input-node">
+        <textarea id="sanctuary-note-data" placeholder="Write down reflections or text fragments that resonated deeply..." class="glass-input-node" style="height: 100px; padding: 0.8rem 1.2rem; resize: none;"></textarea>
+        <button type="button" class="nav-btn-pill" onclick="commitSanctuaryReadingEntry()" style="justify-content: center; margin-top: auto;">Commit Diary Log</button>
+      </div>
+    </div>
 
-<!-- CARD 1: USER ACCOUNT METADATA & IMAGE CROPPING -->
-<div class="db-card">
-<h3 style="font-weight: 700; font-size: 1.3rem; margin-bottom: 1rem;">Profile Customizer</h3>
+    <div class="db-card">
+      <h3 style="font-weight: 700; font-size: 1.3rem; margin-bottom: 0.25rem;">Confession Wall Transmitter</h3>
+      <p style="font-size: 0.85rem; color: #5C5A66; margin-bottom: 1.2rem;">Share unfiltered human thoughts anonymously. Safe validations check input logic instantly.</p>
+      <div class="highlight-wrapper">
+        <div class="highlight-layer" id="confession-backdrop"></div>
+        <textarea class="highlight-textarea-node" id="confession-input-textarea" placeholder="Type your anonymous reflection here..." oninput="handleConfessionTyping(this)"></textarea>
+      </div>
+      <div id="confession-rule-alert-pane" class="rule-alert-pane">
+        <p style="margin: 10px 0;">
+          <strong>Sanctuary Filter Alert:</strong> Words highlighted in light rose are restricted. Please adjust your text layout to continue.
+        </p>
+      </div>
+      <button type="button" class="nav-btn-pill" onclick="submitFilteredConfessionWallPayload()" style="width: 100%; justify-content: center; margin-top: 8px;">Transmit Anonymously</button>
+    </div>
 
-<div class="crop-preview-box">
-<img id="dashboard-avatar-display" src="https://api.dicebear.com/7.x/initials/svg?seed=Reader" alt="Profile Avatar Asset">
-</div>
+    <div class="db-card">
+      <h3 style="font-weight: 700; font-size: 1.3rem; margin-bottom: 0.25rem;">Content & Feature Request</h3>
+      <p style="font-size: 0.85rem; color: #5C5A66; margin-bottom: 1.2rem;">Request technical breakdowns, creative engineering updates, or unique core functionalities.</p>
+      <form action="https://formspree.io/f/xkoaajge" method="POST" id="feature-inbox-form-node" onsubmit="handleFeatureRequestTransfer(event)" style="display: flex; flex-direction: column; gap: 10px; flex-grow: 1;">
+        <input type="hidden" name="_subject" value="New Feature Request from Reader Matrix Profile">
+        <input type="text" name="user_pseudonym" id="feature-req-user" readonly placeholder="@GuestSession" class="glass-input-node" style="background: rgba(0,0,0,0.03) !important; color: #8A8799;">
+        <textarea name="feature_suggestion_details" id="feature-req-content" required placeholder="Outline the documentation updates or topics you want covered..." class="glass-input-node" style="height: 100px; padding: 0.8rem 1.2rem; resize: none;"></textarea>
+        <button type="submit" class="nav-btn-pill" style="justify-content: center; margin-top: auto;">Send Suggestion to Developer</button>
+      </form>
+    </div>
 
-<div style="text-align: center; margin-bottom: 1.5rem;">
-<label for="avatar-file-input" class="nav-btn-pill" style="font-size: 0.8rem; padding: 0.5rem 1.2rem;">
-📸 Select Profile Asset
-</label>
-<input type="file" id="avatar-file-input" accept="image/*" onchange="processLocalProfileAvatarUpload(this)" style="display: none;">
-</div>
-
-<div style="display: flex; flex-direction: column; gap: 10px;">
-<input type="text" id="db-profile-username" placeholder="Display Pseudonym..." class="glass-input-node">
-<input type="text" id="db-profile-bio" placeholder="Profile bio context..." class="glass-input-node">
-<button type="button" class="nav-btn-pill" onclick="saveDashboardProfileChanges()" style="justify-content: center; margin-top: 6px; background: var(--color-accent); color: #fff !important;">Save Changes</button>
-</div>
-</div>
-
-<!-- CARD 2: THE DIGITAL SANCTUARY (READING TRACKER) -->
-<div class="db-card">
-<h3 style="font-weight: 700; font-size: 1.3rem; margin-bottom: 0.25rem;">Sanctuary Diary Logs</h3>
-<p style="font-size: 0.85rem; color: var(--color-ink-soft); margin-bottom: 1.2rem;">Store reading insights, track milestones, and secure personal notes.</p>
-
-<div style="display: flex; flex-direction: column; gap: 10px; flex-grow: 1;">
-<input type="text" id="sanctuary-book-title" placeholder="Book Title Reference..." class="glass-input-node">
-<textarea id="sanctuary-note-data" placeholder="Write down reflections or text fragments that resonated deeply with you..." class="glass-input-node" style="height: 100px; padding: 0.8rem 1.2rem; resize: none;"></textarea>
-<button type="button" class="nav-btn-pill" onclick="commitSanctuaryReadingEntry()" style="justify-content: center; margin-top: auto;">Commit Diary Log</button>
-</div>
-</div>
-
-<!-- CARD 3: ANONYMOUS PASSING PIPELINE FILTER GATEWAY -->
-<div class="db-card">
-<h3 style="font-weight: 700; font-size: 1.3rem; margin-bottom: 0.25rem;">Confession Wall Transmitter</h3>
-<p style="font-size: 0.85rem; color: var(--color-ink-soft); margin-bottom: 1.2rem;">Share unfiltered human thoughts anonymously. Safe validations check input logic instantly.</p>
-
-<div class="highlight-wrapper">
-<div class="highlight-layer" id="confession-backdrop"></div>
-<textarea class="highlight-textarea-node" id="confession-input-textarea" placeholder="Type your anonymous reflection here..." oninput="handleConfessionTyping(this)"></textarea>
-</div>
-
-<div id="confession-rule-alert-pane" class="rule-alert-pane">
-<p style="margin: 10px 0;">
-<strong>Sanctuary Filter Alert:</strong> We have safely archived your current text. To push to the wall, please adjust the words highlighted in light rose to align with our community safety criteria.
-</p>
-</div>
-
-<button type="button" class="nav-btn-pill" onclick="submitFilteredConfessionWallPayload()" style="width: 100%; justify-content: center; margin-top: 8px;">Transmit Anonymously</button>
-</div>
-
-<!-- CARD 4: TOPIC EXPANSION FEATURE SUBMISSION INBOX (FORMSPREE LINKED) -->
-<div class="db-card">
-<h3 style="font-weight: 700; font-size: 1.3rem; margin-bottom: 0.25rem;">Content & Feature Request</h3>
-<p style="font-size: 0.85rem; color: var(--color-ink-soft); margin-bottom: 1.2rem;">Request technical breakdowns, creative engineering updates, or unique core functionalities.</p>
-
-<form action="https://formspree.io/f/{{ site.xkoaajge }}" method="POST" id="feature-inbox-form-node" onsubmit="handleFeatureRequestTransfer(event)" style="display: flex; flex-direction: column; gap: 10px; flex-grow: 1;">
-<input type="hidden" name="_subject" value="New Feature Request from Reader Matrix Profile">
-<input type="text" name="user_pseudonym" id="feature-req-user" readonly placeholder="@GuestSession" class="glass-input-node" style="background: rgba(0,0,0,0.03) !important; color: var(--color-gray);">
-<textarea name="feature_suggestion_details" id="feature-req-content" required placeholder="Outline the documentation updates, custom layout functions, or topics you want covered..." class="glass-input-node" style="height: 100px; padding: 0.8rem 1.2rem; resize: none;"></textarea>
-<button type="submit" class="nav-btn-pill" style="justify-content: center; margin-top: auto;">Send Suggestion to Developer</button>
-</form>
-</div>
-
-</div>
-</div>
+  </div>
 </section>
-</main>
 
-<!-- ==========================================================================
-7. BLUR INTERACTIVE POPUPS CORE STRUCTURES
-========================================================================== -->
-
-<!-- POPUP 1: POPUP NEWSLETTER MANAGER PORTAL -->
+<!-- MODALS CONFIGURATION -->
 <div class="fullscreen-blur-modal" id="newsletter-modal">
-<div class="fullscreen-blur-modal-content">
-<button class="modal-close-trigger" onclick="toggleModalView('newsletter-modal', false)">×</button>
-<span class="hero-eyebrow" style="margin-bottom: 0.25rem;">The Inner Circle Journal</span>
-<h2 style="font-size: 2.2rem; font-weight: 700; margin-bottom: 0.5rem; letter-spacing: -0.02em;">Notes from the Vault</h2>
-<p style="color: var(--color-ink-soft); font-size: 0.95rem; margin-bottom: 1.8rem;">Subscribe to receive regular architectural blueprints, engineering updates, and reflections on design discipline straight to your screen.</p>
-
-<form action="https://formspree.io/f/{{ site.xkoaajge }}" method="POST">
-<input type="email" name="email" placeholder="Your primary secure email..." required class="glass-input-node" style="margin-bottom: 0.75rem;">
-<button type="submit" class="nav-btn-pill" style="width: 100%; justify-content: center; height: 50px; background: var(--color-accent); color: #fff !important;">Subscribe Instantly</button>
-</form>
-<span style="display: block; font-size: 0.75rem; color: var(--color-gray); margin-top: 0.8rem;">Clean logs only. Unsubscribe with one click anytime.</span>
-</div>
+  <div class="fullscreen-blur-modal-content">
+    <button class="modal-close-trigger" onclick="toggleModalView('newsletter-modal', false)">&times;</button>
+    <h2 style="font-size: 2rem; font-weight: 700; margin-bottom: 0.5rem;">Notes from the Vault</h2>
+    <p style="color: #5C5A66; font-size: 0.95rem; margin-bottom: 1.8rem;">Subscribe to receive regular architectural blueprints, engineering updates, and reflections straight to your screen.</p>
+    <form action="https://formspree.io/f/xkoaajge" method="POST">
+      <input type="email" name="email" placeholder="Your primary secure email..." required class="glass-input-node" style="margin-bottom: 0.75rem;">
+      <button type="submit" class="nav-btn-pill" style="width: 100%; justify-content: center; height: 50px; background: #6C5CE7; color: #fff !important;">Subscribe Instantly</button>
+    </form>
+  </div>
 </div>
 
-<!-- POPUP 2: PROFILE LOG ACCELERATOR FRAMEWORK (CREDENTIAL LOCK) -->
 <div class="fullscreen-blur-modal" id="auth-modal">
-<div class="fullscreen-blur-modal-content">
-<button class="modal-close-trigger" onclick="toggleModalView('auth-modal', false)">×</button>
-<h2 id="auth-title" style="font-size: 2rem; font-weight: 700; margin-bottom: 0.5rem;">Initialize Profile</h2>
-<p id="auth-desc" style="color: var(--color-ink-soft); font-size: 0.95rem; margin-bottom: 1.5rem;">Construct a local profile account to run diagnostic diary parameters, save quotes, and write to the board.</p>
+  <div class="fullscreen-blur-modal-content">
+    <button class="modal-close-trigger" onclick="toggleModalView('auth-modal', false)">&times;</button>
+    <h2 id="auth-title" style="font-size: 2rem; font-weight: 700; margin-bottom: 0.5rem;">Initialize Profile</h2>
+    <p id="auth-desc" style="color: #5C5A66; font-size: 0.95rem; margin-bottom: 1.5rem;">Construct a local profile account to run diagnostic diary parameters, save quotes, and write to the board.</p>
+    <div style="display: flex; flex-direction: column; gap: 10px;">
+      <input type="email" id="auth-email-node" placeholder="Account Email..." class="glass-input-node">
+      <input type="password" id="auth-pass-node" placeholder="Secure Workspace Password..." class="glass-input-node">
+      <button type="button" class="nav-btn-pill" id="primary-auth-trigger" onclick="handleAuthProcessing()" style="width: 100%; justify-content: center; height: 50px; margin-top: 6px; background: #6C5CE7; color: #fff !important;">Access Workspace</button>
+      <button type="button" onclick="toggleAuthMode()" id="toggle-auth-link" style="background: none; border: none; color: #6C5CE7; font-size: 0.85rem; text-decoration: underline; cursor: pointer; margin-top: 4px;">Don't have a workspace profile yet? Sign up here.</button>
+    </div>
+  </div>
+</div>
 
-<div style="display: flex; flex-direction: column; gap: 10px;">
-<input type="email" id="auth-email-node" placeholder="Account Email..." class="glass-input-node">
-<input type="password" id="auth-pass-node" placeholder="Secure Workspace Password..." class="glass-input-node">
-<button type="button" class="nav-btn-pill" id="primary-auth-trigger" onclick="handleAuthProcessing()" style="width: 100%; justify-content: center; height: 50px; margin-top: 6px; background: var(--color-accent); color: #fff !important;">Access Workspace</button>
-<button type="button" onclick="toggleAuthMode()" id="toggle-auth-link" style="background: none; border: none; color: var(--color-accent); font-size: 0.85rem; text-decoration: underline; cursor: pointer; margin-top: 4px;">Don't have a workspace profile yet? Sign up here.</button>
-</div>
-</div>
-</div>
-
-<!-- POPUP 3: COMMUNITY ACCESSIBILITY REDIRECT GATEWAY -->
 <div class="fullscreen-blur-modal" id="community-lock-modal">
-<div class="fullscreen-blur-modal-content">
-<button class="modal-close-trigger" onclick="toggleModalView('community-lock-modal', false)">×</button>
-<div style="font-size: 2.5rem; margin-bottom: 0.5rem;">🏛=========🏛</div>
-<h2 style="font-size: 2rem; font-weight: 700; margin-bottom: 0.5rem;">Sanctuary Account Required</h2>
-<p style="color: var(--color-ink-soft); font-size: 0.95rem; margin-bottom: 1.8rem;">Writing logs and pushing to the anonymous walls requires an initialized user workspace profile. Registration requires zero investment.</p>
-<button type="button" onclick="toggleModalView('community-lock-modal', false); toggleModalView('auth-modal', true);" class="nav-btn-pill" style="padding: 0.8rem 2.5rem; background: var(--color-accent); color: #fff !important;">Create Profile Instantly</button>
-</div>
+  <div class="fullscreen-blur-modal-content">
+    <button class="modal-close-trigger" onclick="toggleModalView('community-lock-modal', false)">&times;</button>
+    <h2 style="font-size: 2rem; font-weight: 700; margin-bottom: 0.5rem;">Sanctuary Account Required</h2>
+    <p style="color: #5C5A66; font-size: 0.95rem; margin-bottom: 1.8rem;">Writing logs and pushing to the anonymous walls requires an initialized user workspace profile.</p>
+    <button type="button" onclick="toggleModalView('community-lock-modal', false); toggleModalView('auth-modal', true);" class="nav-btn-pill" style="padding: 0.8rem 2.5rem; background: #6C5CE7; color: #fff !important;">Create Profile Instantly</button>
+  </div>
 </div>
 
-<!-- Global Target Notifications Canvas Overlay Container -->
 <div id="magical-toast-hub"></div>
 
-<!-- ==========================================================================
-8. RUNTIME CORE OPERATIONS ENGINE (JAVASCRIPT RUNTIME)
-========================================================================== -->
+<!-- OPERATIONS INTERACTIVE LOGIC ENGINE -->
 <script>
-// 1. Initial State Engine Parameters
-let ACCOUNT_USER_SESSION = null;
-let AUTH_INTERFACE_IS_SIGNUP = false;
+  window.onerror = function (msg, url, lineNo) {
+    alert("Runtime catch: " + msg + "\nLine: " + lineNo);
+    return false;
+  };
 
-// Local Verification Rules Word Matrix Array
-const BLOCKED_SANCTUARY_WORDS = ["abusiveword1", "hatephrase2", "conflictword3", "toxicterm4"];
+  let ACCOUNT_USER_SESSION = null;
+  let AUTH_INTERFACE_IS_SIGNUP = false;
+  const BLOCKED_SANCTUARY_WORDS = ["exploit", "malware", "ddos", "hack"];
 
-// 2. Navigation Interface Dropdown Controller
-function toggleNavigationDropdown(event) {
-if (event) event.stopPropagation();
-const pane = document.getElementById('account-dropdown-pane');
-pane.classList.toggle('active');
-}
+  function toggleModalView(modalId, renderVisible) {
+    const element = document.getElementById(modalId);
+    if (!element) return;
+    if (renderVisible) { element.classList.add('active'); } else { element.classList.remove('active'); }
+  }
 
-// Dismiss active interactive drop menus seamlessly when selecting backdrop nodes
-window.addEventListener('click', function() {
-const pane = document.getElementById('account-dropdown-pane');
-if (pane) pane.classList.remove('active');
-});
+  function launchWhimsicalToastNotification(actionKey, customStatusMessage = "") {
+    const hub = document.getElementById('magical-toast-hub');
+    if (!hub) return;
+    const toast = document.createElement('div');
+    toast.className = 'toast-alert-box';
+    let vis = { emoji: "✨", message: "Workspace synced." };
 
-// 3. Popup Overlay Display Logic Managers
-function toggleModalView(modalId, renderVisible) {
-const element = document.getElementById(modalId);
-if (!element) return;
+    if (actionKey === 'auth_success') vis = { emoji: "🔒", message: customStatusMessage || "Workspace unlocked!" };
+    else if (actionKey === 'profile_saved') vis = { emoji: "✨", message: "Profile metadata config updated!" };
+    else if (actionKey === 'log_saved') vis = { emoji: "✍️", message: "Diary log entry saved locally." };
+    else if (actionKey === 'confession_live') vis = { emoji: "🕊️", message: "Anonymously pushed to the wall!" };
+    else if (actionKey === 'word_blocked') vis = { emoji: "🧩", message: "Adjust system terms to clear security validation." };
+    else if (actionKey === 'logout') vis = { emoji: "👋", message: "Session closed." };
+    else if (actionKey === 'error') vis = { emoji: "⏳", message: customStatusMessage || "Access action locked." };
 
-// Close dropdown menus automatically on change event
-const dropdown = document.getElementById('account-dropdown-pane');
-if (dropdown) dropdown.classList.remove('active');
+    toast.innerHTML = `
+      <div style="font-size: 1.4rem; line-height: 1;">${vis.emoji}</div>
+      <div style="flex-grow: 1;"><p style="margin:0; font-size:0.9rem; font-weight:500;">${vis.message}</p></div>
+      <div class="toast-countdown-bar"></div>
+    `;
+    hub.appendChild(toast);
+    setTimeout(() => {
+      toast.style.transition = "all 0.5s ease";
+      toast.style.transform = "translateX(130%)";
+      toast.style.opacity = "0";
+      setTimeout(() => toast.remove(), 500);
+    }, 5500);
+  }
 
-if (renderVisible) {
-element.classList.add('active');
-} else {
-element.classList.remove('active');
-}
-}
+  function handleCommunityAccessRequest() {
+    if (!ACCOUNT_USER_SESSION) {
+      launchWhimsicalToastNotification('error', "Verification required to enter workspace.");
+      toggleModalView('community-lock-modal', true);
+    } else {
+      activateDashboardView();
+    }
+  }
 
-// 4. Whimsical Context Notification Framework Generator
-function launchWhimsicalToastNotification(actionKey, customStatusMessage = "") {
-const hub = document.getElementById('magical-toast-hub');
-if (!hub) return;
+  function handleConfessionTyping(textareaElement) {
+    const backgroundLayer = document.getElementById('confession-backdrop');
+    if (!backgroundLayer) return;
+    let sourceString = textareaElement.value;
+    if (BLOCKED_SANCTUARY_WORDS.length > 0) {
+      const structuralExpression = new RegExp(`\\b(${BLOCKED_SANCTUARY_WORDS.join('|')})\\b`, 'gi');
+      sourceString = sourceString.replace(structuralExpression, '<span class="soft-alert-word">$1</span>');
+    }
+    backgroundLayer.innerHTML = sourceString + (sourceString.endsWith('\n') ? '\n ' : '');
+  }
 
-const toast = document.createElement('div');
-toast.className = 'toast-alert-box';
+  function submitFilteredConfessionWallPayload() {
+    const textNode = document.getElementById('confession-input-textarea');
+    const alertPane = document.getElementById('confession-rule-alert-pane');
+    if (!textNode) return;
+    const rawInput = textNode.value.trim();
+    if (!rawInput) return;
 
-let visualProperties = { emoji: "✨", message: "Workspace status synced successfully." };
+    let checkFails = false;
+    for (let forbiddenTerm of BLOCKED_SANCTUARY_WORDS) {
+      if (new RegExp(`\\b${forbiddenTerm}\\b`, 'i').test(rawInput)) { checkFails = true; break; }
+    }
 
-switch(actionKey) {
-case 'auth_success':
-visualProperties = { emoji: "🔒", message: customStatusMessage || "Access cleared! Workspace active." };
-break;
-case 'profile_saved':
-visualProperties = { emoji: "✨", message: customStatusMessage || "Looking sharp! Profile metadata configurations saved." };
-break;
-case 'log_saved':
-visualProperties = { emoji: "✍️", message: customStatusMessage || "Encrypted & locked. Sanctuary diary entries documented safely." };
-break;
-case 'confession_live':
-visualProperties = { emoji: "🕊️", message: customStatusMessage || "Transmitted successfully! Your anonymous voice is on the wall." };
-break;
-case 'word_blocked':
-visualProperties = { emoji: "🧩", message: customStatusMessage || "Draft secured safely. Adjust target terms to clear security regulations." };
-break;
-case 'logout':
-visualProperties = { emoji: "👋", message: "Session terminated cleanly. Goodbye!" };
-break;
-case 'error':
-visualProperties = { emoji: "⏳", message: "Network took a break. Retry execution thread." };
-break;
-}
+    if (checkFails) {
+      launchWhimsicalToastNotification('word_blocked');
+      if (alertPane) { alertPane.style.maxHeight = "120px"; alertPane.style.opacity = "1"; alertPane.style.margin = "0.5rem 0 0 0"; }
+      return;
+    }
 
-toast.innerHTML = &lt;div style="font-size: 1.4rem; line-height: 1;"&gt;${visualProperties.emoji}</div>
-<div style="flex-grow: 1;">
-<p style="margin: 0; font-size: 0.9rem; color: var(--color-ink); font-weight: 500; line-height: 1.4;">${visualProperties.message}&lt;/p&gt; &lt;/div&gt; &lt;div class="toast-countdown-bar"&gt;&lt;/div&gt;;
+    launchWhimsicalToastNotification('confession_live');
+    if (alertPane) { alertPane.style.maxHeight = "0"; alertPane.style.opacity = "0"; }
+    textNode.value = "";
+    document.getElementById('confession-backdrop').innerHTML = "";
+  }
 
-hub.appendChild(toast);
+  function processLocalProfileAvatarUpload(inputNode) {
+    const imageAsset = inputNode.files[0];
+    if (!imageAsset) return;
+    const bufferReader = new FileReader();
+    bufferReader.onload = function(event) {
+      document.getElementById('dashboard-avatar-display').src = event.target.result;
+      launchWhimsicalToastNotification('profile_saved', "Avatar scaling sync completed.");
+    };
+    bufferReader.readAsDataURL(imageAsset);
+  }
 
-// Gracefully sweep alert nodes clean from local DOM parameters automatically
-setTimeout(() => {
-toast.style.transition = "all 0.5s cubic-bezier(0.16, 1, 0.3, 1)";
-toast.style.transform = "translateX(130%)";
-toast.style.opacity = "0";
-setTimeout(() => toast.remove(), 500);
-}, 5500);
-}
+  function commitSanctuaryReadingEntry() {
+    const title = document.getElementById('sanctuary-book-title');
+    const note = document.getElementById('sanctuary-note-data');
+    if (!title || !note || !title.value.trim() || !note.value.trim()) return;
+    launchWhimsicalToastNotification('log_saved');
+    title.value = ""; note.value = "";
+  }
 
-// 5. Gateway Accessibility Verification Engine
-function handleCommunityAccessRequest() {
-if (!ACCOUNT_USER_SESSION) {
-launchWhimsicalToastNotification('error', "🏛️ Verification required to enter the inner boards.");
-toggleModalView('community-lock-modal', true);
-} else {
-activateDashboardView();
-document.getElementById('confession-input-textarea').scrollIntoView({ behavior: 'smooth' });
-}
-}
+  function handleFeatureRequestTransfer(event) {
+    setTimeout(() => {
+      launchWhimsicalToastNotification('profile_saved', "Packets synced to dev inbox!");
+      document.getElementById('feature-req-content').value = "";
+    }, 250);
+  }
 
-// 6. Dynamic Context Realtime Text Highlighting Engine
-function handleConfessionTyping(textareaElement) {
-const backgroundLayer = document.getElementById('confession-backdrop');
-if (!backgroundLayer) return;
+  function toggleAuthMode() {
+    AUTH_INTERFACE_IS_SIGNUP = !AUTH_INTERFACE_IS_SIGNUP;
+    document.getElementById('auth-title').innerText = AUTH_INTERFACE_IS_SIGNUP ? "Join The Sanctuary" : "Initialize Profile";
+    document.getElementById('primary-auth-trigger').innerText = AUTH_INTERFACE_IS_SIGNUP ? "Register Profile" : "Access Workspace";
+  }
 
-let sourceString = textareaElement.value;
+  function handleAuthProcessing() {
+    const emailField = document.getElementById('auth-email-node');
+    if (!emailField || !emailField.value.trim()) return;
+    const handle = emailField.value.split('@')[0];
+    ACCOUNT_USER_SESSION = { email: emailField.value, userHandle: handle };
+    
+    document.getElementById('feature-req-user').value = `@${handle}`;
+    document.getElementById('db-profile-username').value = handle;
+    
+    toggleModalView('auth-modal', false);
+    launchWhimsicalToastNotification('auth_success', `Active session verified for ${handle}`);
+    activateDashboardView();
+  }
 
-if (BLOCKED_SANCTUARY_WORDS.length > 0) {
-const structuralExpression = new RegExp(\\b(${BLOCKED_SANCTUARY_WORDS.join('|')})\b, 'gi'); // Wrap target elements cleanly into our hidden backdrop layer using our warm rose spans sourceString = sourceString.replace(structuralExpression, '&lt;span class="soft-alert-word"&gt;$1</span>');
-}
+  function saveDashboardProfileChanges() {
+    const nameField = document.getElementById('db-profile-username');
+    if (nameField && ACCOUNT_USER_SESSION && nameField.value.trim()) {
+      ACCOUNT_USER_SESSION.userHandle = nameField.value.trim();
+    }
+    launchWhimsicalToastNotification('profile_saved');
+  }
 
-backgroundLayer.innerHTML = sourceString + (sourceString.endsWith('\n') ? '\n ' : '');
-}
+  function activateDashboardView() {
+    const canvas = document.getElementById('core-user-dashboard-canvas');
+    if (canvas) { canvas.style.display = 'block'; canvas.scrollIntoView({ behavior: 'smooth' }); }
+  }
 
-// 7. Security Filtering Check Pipeline
-function submitFilteredConfessionWallPayload() {
-const textNode = document.getElementById('confession-input-textarea');
-const alertPane = document.getElementById('confession-rule-alert-pane');
-if (!textNode) return;
-
-const rawInput = textNode.value.trim();
-if (!rawInput) return;
-
-let checkFails = false;
-for (let forbiddenTerm of BLOCKED_SANCTUARY_WORDS) {
-const expressionTest = new RegExp(\\b${forbiddenTerm}\b`, 'i');
-if (expressionTest.test(rawInput)) {
-checkFails = true;
-break;
-}
-}
-
-if (checkFails) {
-launchWhimsicalToastNotification('word_blocked');
-if (alertPane) {
-alertPane.style.maxHeight = "120px";
-alertPane.style.opacity = "1";
-alertPane.style.margin = "0.5rem 0 0 0";
-}
-return; // Retains text data inside text window frame buffer securely
-}
-
-// Successful operation execution track
-launchWhimsicalToastNotification('confession_live');
-if (alertPane) {
-alertPane.style.maxHeight = "0";
-alertPane.style.opacity = "0";
-alertPane.style.margin = "0";
-}
-textNode.value = "";
-document.getElementById('confession-backdrop').innerHTML = "";
-}
-
-// 8. Zero-Investment Client Asset Upload Engine
-function processLocalProfileAvatarUpload(inputNode) {
-const imageAsset = inputNode.files[0];
-if (!imageAsset) return;
-
-const bufferReader = new FileReader();
-bufferReader.onload = function(event) {
-const encryptedBase64Payload = event.target.result;
-
-// Render cropped canvas structure dimensions automatically inside UI
-document.getElementById('dashboard-avatar-display').src = encryptedBase64Payload;
-
-const dynamicNavSphere = document.getElementById('nav-avatar-circle');
-if (dynamicNavSphere) {
-dynamicNavSphere.style.background = url('${encryptedBase64Payload}') center/cover no-repeat`;
-}
-
-launchWhimsicalToastNotification('profile_saved', "📸 Profile avatar asset scaled & refreshed cleanly!");
-};
-bufferReader.readAsDataURL(imageAsset);
-}
-
-// 9. Sanctuary Reading Diary Data Operations
-function commitSanctuaryReadingEntry() {
-const bookTitle = document.getElementById('sanctuary-book-title');
-const noteContent = document.getElementById('sanctuary-note-data');
-
-if (!bookTitle || !noteContent || !bookTitle.value.trim() || !noteContent.value.trim()) return;
-
-launchWhimsicalToastNotification('log_saved');
-bookTitle.value = "";
-noteContent.value = "";
-}
-
-// 10. Formspree Interface Signal Handlers
-function handleFeatureRequestTransfer(event) {
-// Allow execution event parameters to pipeline smoothly onwards onto Formspree servers
-setTimeout(() => {
-launchWhimsicalToastNotification('profile_saved', "🚀 Suggestion packets transmitted safely directly to dev inbox!");
-document.getElementById('feature-req-content').value = "";
-}, 250);
-}
-
-// 11. Custom Identity Mock Interface Controls
-function toggleAuthMode() {
-AUTH_INTERFACE_IS_SIGNUP = !AUTH_INTERFACE_IS_SIGNUP;
-document.getElementById('auth-title').innerText = AUTH_INTERFACE_IS_SIGNUP ? "Join The Sanctuary" : "Initialize Profile";
-document.getElementById('auth-desc').innerText = AUTH_INTERFACE_IS_SIGNUP ? "Register a free user reader account profile to clear dashboard gates." : "Construct a local profile account to run diagnostic diary parameters.";
-document.getElementById('primary-auth-trigger').innerText = AUTH_INTERFACE_IS_SIGNUP ? "Register Workspace Profile" : "Access Workspace";
-document.getElementById('toggle-auth-link').innerText = AUTH_INTERFACE_IS_SIGNUP ? "Already have a profile account? Log in here." : "Don't have a workspace profile yet? Sign up here.";
-}
-
-function handleAuthProcessing() {
-const emailValue = document.getElementById('auth-email-node').value.trim();
-if (!emailValue) return;
-
-ACCOUNT_USER_SESSION = { email: emailValue, userHandle: emailValue.split('@')[0] };
-
-// Map global runtime identities dynamically onto dashboard systems
-document.getElementById('nav-btn-label').innerText = ACCOUNT_USER_SESSION.userHandle;
-document.getElementById('feature-req-user').value = @${ACCOUNT_USER_SESSION.userHandle}`;
-document.getElementById('db-profile-username').value = ACCOUNT_USER_SESSION.userHandle;
-
-document.getElementById('dropdown-guest-links').style.display = 'none';
-document.getElementById('dropdown-user-links').style.display = 'block';
-
-toggleModalView('auth-modal', false);
-launchWhimsicalToastNotification('auth_success', ✨ Sanctuary connection validated for${ACCOUNT_USER_SESSION.userHandle}`);
-activateDashboardView();
-}
-
-function executeSignOutAction() {
-ACCOUNT_USER_SESSION = null;
-document.getElementById('nav-btn-label').innerText = "Account";
-document.getElementById('nav-avatar-circle').style.background = "var(--color-accent)";
-
-document.getElementById('dropdown-guest-links').style.display = 'block';
-document.getElementById('dropdown-user-links').style.display = 'none';
-
-closeDashboardView();
-launchWhimsicalToastNotification('logout');
-}
-
-function saveDashboardProfileChanges() {
-const alternatePseudonym = document.getElementById('db-profile-username').value.trim();
-if (alternatePseudonym && ACCOUNT_USER_SESSION) {
-ACCOUNT_USER_SESSION.userHandle = alternatePseudonym;
-document.getElementById('nav-btn-label').innerText = alternatePseudonym;
-}
-launchWhimsicalToastNotification('profile_saved');
-}
-
-function activateDashboardView() {
-document.getElementById('core-user-dashboard-canvas').style.display = 'block';
-document.getElementById('core-user-dashboard-canvas').scrollIntoView({ behavior: 'smooth' });
-}
-
-function closeDashboardView() {
-document.getElementById('core-user-dashboard-canvas').style.display = 'none';
-window.scrollTo({ top: 0, behavior: 'smooth' });
-}
+  function closeDashboardView() {
+    const canvas = document.getElementById('core-user-dashboard-canvas');
+    if (canvas) canvas.style.display = 'none';
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
 </script>
-</body>
-</html>
