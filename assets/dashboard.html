@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Reader Dashboard</title>
+  <link rel="stylesheet" href="css/custom-features.css">
+  <style>
+    body { font-family: -apple-system, BlinkMacSystemFont, sans-serif; padding: 20px; background: #171123; color: #e2daf0; }
+    .dash-container { max-width: 800px; margin: 0 auto; background: #1e162e; padding: 25px; border-radius: 16px; border: 1px solid rgba(180, 140, 252, 0.3); }
+    .feature-card { background: rgba(255,255,255,0.05); padding: 15px; border-radius: 10px; margin-bottom: 15px; border-left: 4px solid #bfa3ff; }
+    .btn-action { width: 100%; display: block; text-align: center; text-decoration: none; margin-top: 10px; }
+  </style>
+</head>
+<body>
+
+<div class="dash-container">
+  <h2>Welcome to your Library Space ✨</h2>
+  <p id="userEmailInfo" style="color: #a99cb8;"></p>
+  
+  <hr style="border: none; border-top: 1px solid rgba(180,140,252,0.2); margin: 20px 0;">
+
+  <!-- Feature 1: Confession Wall -->
+  <div class="feature-card">
+    <h3>📖 Anonymous Confession Wall</h3>
+    <p>Share your untold romantic expressions or book opinions completely anonymously.</p>
+    <a href="confessions.html" class="pill-btn btn-action">Open Confession Wall &rarr;</a>
+  </div>
+
+  <!-- Feature 2: Community Forum -->
+  <div class="feature-card">
+    <h3>🤝 Reader Community Hub</h3>
+    <p>Interact with fellow readers. Be polite, share rules, and talk about your favorite arcs.</p>
+    <a href="community.html" class="pill-btn btn-action">Enter Forum Space &rarr;</a>
+  </div>
+
+  <!-- Account & Support Blocks -->
+  <div class="feature-card">
+    <h3>📢 New Release Tracking</h3>
+    <p>You have access to 8 live book metrics and pre-order drops.</p>
+  </div>
+
+  <div class="feature-card" style="border-left-color: #ff6b6b;">
+    <h3>📬 Need Help?</h3>
+    <!-- Corrected Help Mailbox -->
+    <p>Contact Customer Care directly at: <a href="mailto:help.nsnandvanshi@gmail.com" style="color: #bfa3ff; font-weight: 600;">help.nsnandvanshi@gmail.com</a></p>
+  </div>
+
+  <button class="pill-btn" style="background: #ff6b6b !important; color:#fff !important; width:100%; margin-top:20px;" onclick="logOut()">Sign Out</button>
+</div>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { getAuth, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyALh5lDBnHK69BORMhh3mM9tZiOeFdomm0",
+    authDomain: "website-git.firebaseapp.com",
+    projectId: "website-git",
+    appId: "1:687842970832:web:de4db9f241209913aaa2d5"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+
+  onAuthStateChanged(auth, (user) => {
+    if(!user) {
+      window.location.href = "../index.html";
+    } else {
+      document.getElementById("userEmailInfo").textContent = "Logged in as: " + user.email;
+    }
+  });
+
+  window.logOut = () => {
+    signOut(auth).then(() => window.location.href = "../index.html");
+  };
+</script>
+</body>
+</html>
