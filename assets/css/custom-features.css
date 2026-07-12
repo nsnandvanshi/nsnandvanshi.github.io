@@ -138,18 +138,21 @@ header, .site-header, .nav-bar {
   box-sizing: border-box;
 }
 
-/* --- GPU-ACCELERATED TRANSITIONS & PERFORMANCE MICRO-INTERACTIONS --- */
+/* ==========================================================================
+   REFINED HARDWARE-ACCELERATED ENTRANCE EFFECTS & MICRO-INTERACTIONS
+   ========================================================================== */
 
-/* Staggered entrance animations for collection cards */
-.books-grid, .post-list {
-  animation: cardEntrance 0.6s cubic-bezier(0.25, 1, 0.5, 1) both;
+/* 1. Staggered Entry Targets for Content Groups */
+.books-grid, 
+.post-list {
+  animation: structuralEntrance 0.5s cubic-bezier(0.25, 1, 0.5, 1) both;
   will-change: transform, opacity;
 }
 
-@keyframes cardEntrance {
+@keyframes structuralEntrance {
   from {
     opacity: 0;
-    transform: translateY(20px);
+    transform: translateY(15px);
   }
   to {
     opacity: 1;
@@ -157,8 +160,8 @@ header, .site-header, .nav-bar {
   }
 }
 
-/* Master interactive scaling matrix for whole-card anchor layers */
-.interactive-card {
+/* 2. Isolated Interactive Scaling for Whole-Card Book Anchors */
+a.interactive-card {
   display: flex;
   flex-direction: column;
   background: var(--color-surface);
@@ -166,19 +169,29 @@ header, .site-header, .nav-bar {
   overflow: hidden;
   border: 1px solid var(--color-line);
   text-decoration: none !important;
-  transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1), 
-              border-color 0.4s cubic-bezier(0.25, 1, 0.5, 1),
-              box-shadow 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+  transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1), 
+              border-color 0.3s cubic-bezier(0.25, 1, 0.5, 1),
+              box-shadow 0.3s cubic-bezier(0.25, 1, 0.5, 1);
   will-change: transform, box-shadow;
 }
 
-.interactive-card:hover {
-  transform: scale(1.03) translateY(-4px);
-  border-color: var(--color-accent-soft);
-  box-shadow: 0 12px 30px rgba(163, 128, 255, 0.15);
+/* Enforces a desktop-only hover state to prevent layout breaking on mobile tap */
+@media (min-width: 769px) {
+  a.interactive-card:hover {
+    transform: scale(1.03) translateY(-4px);
+    border-color: var(--color-accent-soft);
+    box-shadow: 0 12px 25px rgba(163, 128, 255, 0.15);
+  }
+  
+  a.interactive-card:hover h3 {
+    color: var(--color-accent-soft) !important;
+  }
 }
 
-/* Fallback fix to prevent child link color pollution */
-.interactive-card:hover h3 {
-  color: var(--color-accent-soft) !important;
+/* 3. Isolated Blog Row Styles to Keep Layouts Separate */
+.post-row h3 a {
+  transition: color 0.2s ease;
+}
+.post-row h3 a:hover {
+  color: var(--color-accent) !important;
 }
