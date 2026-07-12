@@ -48,11 +48,21 @@
               {{ content }}
             </div>
 
+            <!-- Old layout raw textual loops converted to custom button arrays -->
             {% if page.links %}
-              <div class="book-links" style="margin-top:2rem;">
+              <div class="book-links" style="margin-top: 2.5rem; display: flex; flex-wrap: wrap; gap: 12px;">
                 {% for link in page.links %}
-                  <a href="{{ link.url }}" target="_blank" rel="noopener">{{ link.store }}</a>
+                  <a href="{{ link.url }}" 
+                     target="_blank" 
+                     rel="noopener" 
+                     class="pill-btn" 
+                     style="font-size: 0.85rem; padding: 10px 20px; letter-spacing: 0.02em;">
+                     Get it on {{ link.store }}
+                  </a>
                 {% endfor %}
+              </div>
+            {% endif %}
+
               </div>
             {% endif %}
           </div>
