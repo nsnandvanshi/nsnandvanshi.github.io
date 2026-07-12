@@ -112,7 +112,6 @@ img { max-width: 100%; display: block; }
       <a class="brand" href="{{ '/' | relative_url }}">
         <img src="{{ '/assets/images/logo.jpg' | relative_url }}" alt="{{ site.author }} logo">
 
-
 /* ---------- Header / Mobile-First Navigation ---------- */
 .site-header {
   padding: 1.2rem 0;
@@ -128,13 +127,39 @@ img { max-width: 100%; display: block; }
 }
 
 /* Restricts the massive logo graphic layout dynamically */
-header img, 
+header img,
 .brand {
-  max-height: 60px !important; 
+  max-height: 60px !important;
   width: auto !important;
   object-fit: contain;
   display: inline-block;
   vertical-align: middle;
+}
+
+.nav-horizontal-links {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+/* High Visibility Pill Formats */
+.pill-btn {
+  background: linear-gradient(135deg, #bfa3ff, #ddccff) !important;
+  color: #120c1f !important;                                                                                                                           border: none !important;
+  padding: 8px 18px;
+  border-radius: 50px;
+  font-weight: 600;                                                                                                                                    font-size: 0.85rem;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+  white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+}
+.pill-btn:hover {
+  transform: translateY(-1px);
 }
 
 /* ---------- Hero Section ---------- */
