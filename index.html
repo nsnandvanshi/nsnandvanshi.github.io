@@ -127,6 +127,45 @@ title: Home
 
 {% include divider.html %}
 
+<!-- ==================== HOMEPAGE PUBLIC CONFESSION TICKER ==================== -->
+<section class="public-confessions-ticker" style="padding: 40px 0; background: rgba(20, 14, 36, 0.6); overflow: hidden;">
+  <div class="wrap">
+    <span class="section-label">Unspoken Echoes</span>
+    <h2 class="section-heading" style="margin-top: 5px; margin-bottom: 25px; font-family: var(--font-display);">Whispers from the Darkroom</h2>
+    
+    <div id="tickerTrack" style="display: flex; gap: 20px; overflow-x: auto; padding: 20px 5px; scrollbar-width: none; -ms-overflow-style: none; -webkit-overflow-scrolling: touch;">
+      <!-- Dynamic Read-Only Cards Append Here Layout -->
+    </div>
+  </div>
+</section>
+
+<script>
+  (async function initPublicTicker() {
+    const track = document.getElementById('tickerTrack');
+    try {
+      const response = await fetch("YOUR_DEPLOYED_WEB_APP_URL?sheet=Confessions");
+      const result = await response.json();
+      if(result.status === "success" && result.data.length > 0) {
+        track.innerHTML = "";
+        result.data.forEach(item => {
+          const card = document.createElement('div');
+          card.className = 'interactive-card';
+          card.style.cssText = "flex: 0 0 300px; padding: 20px; background: var(--color-surface); border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.2);";
+          card.innerHTML = `
+            <p style="margin: 0 0 12px 0; font-style: italic; font-size: 0.95rem; color: #cbd5e1; min-height: 60px;">"${item.content}"</p>
+            <span style="font-size: 0.75rem; color: var(--color-accent-soft); display: block; font-family: var(--font-display);">✨ A Quiet Soul</span>
+          `;
+          track.appendChild(card);
+        });
+      } else {
+        track.innerHTML = '<div class="empty-state">The winds are currently quiet.</div>';
+      }
+    } catch(e) {
+      track.innerHTML = '<div class="empty-state" style="color: #ff6b6b;">The connection to the archives dropped.</div>';
+    }
+  })();
+</script>
+
 <!-- ==================== BIBLIOGRAPHY SECTION ==================== -->
 <section class="books" id="books" style="padding: 60px 0;">
   <div class="wrap">
