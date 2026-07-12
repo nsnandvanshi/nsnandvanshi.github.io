@@ -1,4 +1,4 @@
-/* =========================================================
+==================================================
    N.S. Nandvanshi — Unified Dark Purple Production Theme
    Design system: Deep Midnight Purple, Soft Amethyst, Highlight Lavender
    ========================================================= */
@@ -385,3 +385,42 @@ header img,
 .interactive-card:hover h3 {
   color: var(--color-accent-soft) !important;
 }
+
+  /* ==================== MAIN NAVIGATION PILL BUTTONS ==================== */
+  .main-nav {
+    display: flex;
+    gap: 12px; /* Adds clean spacing between the pill buttons */
+    align-items: center;
+  }
+
+  .main-nav a {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 8px 20px;
+    font-family: "Inter", -apple-system, BlinkMacSystemFont, sans-serif !important;
+    font-size: 0.85rem !important;
+    font-weight: 500;
+    color: #ffffff !important;
+    text-decoration: none;
+    
+    /* Elegant Pill & Glass Effects */
+    background: rgba(191, 163, 255, 0.15) !important; /* Soft light purple */
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: 1px solid rgba(221, 204, 255, 0.3) !important; /* 1px light purple boundary */
+    border-radius: 50px !important;
+    
+    /* Subtle Color Shadow */
+    box-shadow: 0 4px 15px rgba(163, 128, 255, 0.2);
+    transition: all 0.3s ease;
+  }
+
+  /* Hover and Interactive Effects */
+  .main-nav a:hover {
+    background: rgba(191, 163, 255, 0.25) !important;
+    border-color: rgba(221, 204, 255, 0.5) !important;
+    box-shadow: 0 4px 20px rgba(163, 128, 255, 0.35);
+    transform: translateY(-1px);
+    color: #ffffff !important;
+  }
