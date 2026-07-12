@@ -313,3 +313,48 @@ header img,
   .post-row { grid-template-columns: 1fr; }
   .site-header .wrap { justify-content: center; text-align: center; }
 }
+
+/* --- GPU-ACCELERATED TRANSITIONS & PERFORMANCE MICRO-INTERACTIONS --- */
+
+/* Staggered entrance animations for collection cards */
+.books-grid, .post-list {
+  animation: cardEntrance 0.6s cubic-bezier(0.25, 1, 0.5, 1) both;
+  will-change: transform, opacity;
+}
+
+@keyframes cardEntrance {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Master interactive scaling matrix for whole-card anchor layers */
+.interactive-card {
+  display: flex;
+  flex-direction: column;
+  background: var(--color-surface);
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid var(--color-line);
+  text-decoration: none !important;
+  transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1), 
+              border-color 0.4s cubic-bezier(0.25, 1, 0.5, 1),
+              box-shadow 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+  will-change: transform, box-shadow;
+}
+
+.interactive-card:hover {
+  transform: scale(1.03) translateY(-4px);
+  border-color: var(--color-accent-soft);
+  box-shadow: 0 12px 30px rgba(163, 128, 255, 0.15);
+}
+
+/* Fallback fix to prevent child link color pollution */
+.interactive-card:hover h3 {
+  color: var(--color-accent-soft) !important;
+}
