@@ -1,102 +1,126 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Community Hub</title>
-  <link rel="stylesheet" href="main.css">
-  <style>
-    .panel { max-width:600px; margin:25px auto; background:var(--color-bg-soft); padding:20px; border-radius:12px; border:1px solid var(--color-line); }
-    .rules-banner { background:rgba(163,128,255,0.1); border-left:4px solid var(--color-accent); padding:10px; border-radius:6px; font-size:0.85rem; margin-bottom:15px; }
-    .msg-card { background:rgba(255,255,255,0.03); padding:10px; border-radius:8px; margin-top:8px; display:flex; justify-content:space-between; align-items:center; }
-  </style>
-</head>
-<body>
-<div class="panel">
-  <div style="display:flex; justify-content:space-between; align-items:center;">
-    <a href="dashboard.html" style="color:var(--color-accent); font-weight:600;">&larr; Back to Dashboard</a>
-  </div>
-  <h2>Reader Community Room 🤝</h2>
-  
-  <div class="rules-banner">
-    <strong>📜 Community Regulations:</strong> Please remain incredibly polite, maintain structural book discussions, and explicitly protect privacy.
-  </div>
+---
+layout: default
+title: Community Room
+---
 
-  <textarea id="forumMsg" placeholder="Share a message with the group..."></textarea>
-  <button class="pill-btn" style="width:100%;" onclick="sendCommunityMsg()">Send to Feed</button>
+<section class="page-header">
+  <div class="wrap">
+    <span class="section-label">Reader Hub</span>
+    <h1>Community Room</h1>
+    <p>Connect with other readers, share book reviews, discuss character arcs, and chat about your favorite chapters.</p>
+  </div>
+</section>
 
-  <div id="forumFeed" style="margin-top:20px;"></div>
-</div>
+<section class="dashboard-core" style="padding: 40px 0;">
+  <div class="wrap" style="display: grid; grid-template-columns: 1fr; gap: 40px;">
+    
+    <!-- Post Creation Box -->
+    <div class="interactive-card" style="padding: 30px; background: rgba(38, 26, 65, 0.4);">
+      <h3 style="margin-top: 0; margin-bottom: 15px; font-family: var(--font-display);">Start a Discussion</h3>
+      <form id="communityForm">
+        <div style="margin-bottom: 12px;">
+          <input type="text" id="commUser" placeholder="Your Handle/Name (e.g., BookWorm42)" required style="width: 100%; background: #140e24; border: 1px solid var(--color-line); border-radius: 6px; padding: 10px; color: #fff; font-family: inherit;">
+        </div>
+        <div style="margin-bottom: 15px;">
+          <textarea id="commContent" maxlength="800" placeholder="Share your reviews or talk with the community..." required style="width: 100%; min-height: 100px; background: #140e24; border: 1px solid var(--color-line); border-radius: 6px; padding: 12px; color: #fff; font-family: inherit; resize: vertical;"></textarea>
+        </div>
+        <button type="submit" class="pill-btn" style="width: 100%; border: none; cursor: pointer;">Broadcast Post</button>
+      </form>
+      <div id="commStatus" style="margin-top: 15px; font-size: 0.9rem; text-align: center; display: none;"></div>
+    </div>
+
+    <!-- Live Feed Column -->
+    <div>
+      <h2 style="font-family: var(--font-display); margin-bottom: 20px; display: flex; align-items: center; gap: 10px;">
+        <span>Discussion Stream</span>
+        <span id="commIndicator" class="section-label" style="text-transform: none;">Loading...</span>
+      </h2>
+      <div id="communityFeed" style="display: flex; flex-direction: column; gap: 16px;">
+        <!-- Dynamic timeline rows render here -->
+      </div>
+    </div>
+
+  </div>
+</section>
 
 <script>
-  // Paste your unique Google Apps Script deployment URL here
-  const SHEETS_API_URL = "https://script.google.com/macros/s/AKfycbw4YPYY1GzMczYf-50pPeY_RsOcgWpJpWCLSJkVOnvUMr65oPC0efPz_4BQpycqRkXQIw/exec";
+  // PASTE YOUR SAME GOOGLE WEB APP URL HERE
+  const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwBjJMXE22ugJy2zxO4aGCsMLfP51YJB8lnZEuSPc019kiZu6ow-w2wR-FjSiaBLq4jsA/exec";
+  const SHEET_NAME = "Community";
 
-  // Fetches live forum data from Google Sheets
-  async function renderForum() {
-    const feed = document.getElementById("forumFeed");
-    feed.innerHTML = "<p style='color: var(--color-gray);'>Loading forum feed...</p>";
-    
+  const commForm = document.getElementById('communityForm');
+  const commUser = document.getElementById('commUser');
+  const commContent = document.getElementById('commContent');
+  const commStatus = document.getElementById('commStatus');
+  const communityFeed = document.getElementById('communityFeed');
+  const commIndicator = document.getElementById('commIndicator');
+
+  // Fetch and layout current thread matrix
+  async function loadCommunity() {
     try {
-      const response = await fetch(SHEETS_API_URL);
-      const allRows = await response.json();
+      commIndicator.style.display = "inline-block";
+      commIndicator.textContent = "Updating stream...";
+      const response = await fetch(`${SCRIPT_URL}?sheet=${SHEET_NAME}`);
+      const result = await response.json();
       
-      // Filter for community messages only
-      const forumPosts = allRows.filter(item => item.type === "community");
-      
-      feed.innerHTML = forumPosts.length === 0 ? "<p>No messages in the forum yet. Start the conversation!</p>" : "";
-      
-      forumPosts.forEach((item) => {
-        const msg = document.createElement("div");
-        msg.className = "msg-card";
-        msg.innerHTML = `
-          <span><strong>Reader:</strong> ${item.content}</span>
-          <button class="pill-btn" style="background:#ff6b6b!important;" onclick="deleteForumPost(${item.id})">Delete</button>
-        `;
-        feed.appendChild(msg);
-      });
+      communityFeed.innerHTML = "";
+      if (result.status === "success" && result.data.length > 0) {
+        result.data.forEach(item => {
+          const date = new Date(item.timestamp).toLocaleDateString(undefined, { month: 'short', day: 'numeric', hour: '2-digit', minute:'2-digit' });
+          const row = document.createElement('div');
+          row.className = 'interactive-card';
+          row.style.padding = '22px';
+          row.innerHTML = `
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 8px;">
+              <span style="font-weight: 600; color: var(--color-accent-soft); font-family: var(--font-display);">@${item.username}</span>
+              <span style="font-size: 0.75rem; color: var(--color-muted);">${date}</span>
+            </div>
+            <p style="margin: 0; line-height: 1.6; color: #cbd5e1; white-space: pre-wrap;">${item.content}</p>
+          `;
+          communityFeed.appendChild(row);
+        });
+        commIndicator.style.display = "none";
+      } else {
+        communityFeed.innerHTML = '<div class="empty-state">No open discussions yet. Break the ice above!</div>';
+        commIndicator.style.display = "none";
+      }
     } catch (error) {
-      feed.innerHTML = "<p style='color: #ff6b6b;'>Failed to sync forum data.</p>";
-      console.error("Sync Error:", error);
+      console.error(error);
+      commIndicator.textContent = "Connection error";
+      communityFeed.innerHTML = '<div class="empty-state" style="color: #ff6b6b;">Failed to compile community stream pipeline.</div>';
     }
   }
 
-  // Sends a new message to the Google Sheet labeled as "community"
-  async function sendCommunityMsg() {
-    const inputEl = document.getElementById("forumMsg");
-    const val = inputEl.value.trim();
-    if (!val) return;
+  // Process data transmission
+  commForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    commStatus.style.display = "block";
+    commStatus.style.color = "var(--color-muted)";
+    commStatus.textContent = "Publishing post...";
 
-    inputEl.disabled = true;
-    
     try {
-      await fetch(SHEETS_API_URL, {
+      await fetch(SCRIPT_URL, {
         method: "POST",
         mode: "no-cors",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          action: "add",
-          content: val,
-          type: "community"
+          sheet: SHEET_NAME,
+          username: commUser.value,
+          content: commContent.value
         })
       });
+
+      commStatus.style.color = "#4ade80";
+      commStatus.textContent = "Post live in community stream!";
+      commContent.value = "";
       
-      inputEl.value = "";
-      setTimeout(renderForum, 600); // Wait briefly for Google Sheets to update
+      setTimeout(loadCommunity, 1200);
     } catch (error) {
-      alert("Error sending message.");
-    } finally {
-      inputEl.disabled = false;
+      commStatus.style.color = "#f87171";
+      commStatus.textContent = "Publishing error. Try again.";
     }
-  }
+  });
 
-  // Fallback local deletion logic for UI (Full sheet row cleanup requires Apps Script delete handling)
-  window.deleteForumPost = (id) => {
-    alert("Row indexed as ID " + id + " flagged for deletion. Refreshing view.");
-    renderForum();
-  };
-
-  document.addEventListener("DOMContentLoaded", renderForum);
+  // Trigger init on mount
+  loadCommunity();
 </script>
-</body>
-</html>
