@@ -137,61 +137,6 @@ header img,
   vertical-align: middle;
 }
 
-  /* ==================== ACTUAL NAVIGATION PILL BUTTONS OVERRIDE ==================== */
-  .auth-nav-inline a {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    padding: 8px 18px;
-    font-family: "Inter", -apple-system, BlinkMacSystemFont, sans-serif !important;
-    font-size: 0.85rem !important;
-    font-weight: 500;
-    color: #ffffff !important;
-    text-decoration: none;
-    margin-right: 0 !important; /* Cleans up inline spacing */
-    
-    /* Elegant Pill & Glass Effects */
-    background: rgba(191, 163, 255, 0.15) !important; /* Soft light purple */
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
-    border: 1px solid rgba(221, 204, 255, 0.3) !important; /* Light purple boundary */
-    border-radius: 50px !important;
-    
-    /* Subtle Color Shadow */
-    box-shadow: 0 4px 15px rgba(163, 128, 255, 0.2);
-    transition: all 0.3s ease;
-  }
-
-  /* Hover and Interactive Effects */
-  .auth-nav-inline a:hover {
-    background: rgba(191, 163, 255, 0.25) !important;
-    border-color: rgba(221, 204, 255, 0.5) !important;
-    box-shadow: 0 4px 20px rgba(163, 128, 255, 0.35);
-    transform: translateY(-1px);
-    color: #ffffff !important;
-  }
-
-/* High Visibility Pill Formats */
-.pill-btn {
-  background: linear-gradient(135deg, #bfa3ff, #ddccff) !important;
-  color: #120c1f !important;
-  border: none !important;
-  padding: 8px 18px;
-  border-radius: 50px;
-  font-weight: 600;
-  font-size: 0.85rem;
-  cursor: pointer;
-  transition: transform 0.2s ease;
-  white-space: nowrap;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  text-decoration: none;
-}
-.pill-btn:hover {
-  transform: translateY(-1px);
-}
-
 /* ---------- Hero Section ---------- */
 .hero { padding: var(--space-xl) 0 var(--space-lg); }
 .hero .wrap {
