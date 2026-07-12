@@ -12,47 +12,39 @@ title: Home
     object-fit: contain !important;
   }
 
-  /* Inline layout correction to keep auth components level with theme navigation elements */
-  .auth-nav-inline {
+    /* ==================== NAVIGATION PILL BUTTONS OVERRIDE ==================== */
+  .nav-horizontal-links a {
     display: inline-flex;
     align-items: center;
-    gap: 12px;
-    margin-left: 15px;
-    vertical-align: middle;
-  }
-  
-  .auth-overlay {
-    position: fixed;
-    inset: 0;
-    background: rgba(0,0,0,0.6);
-    backdrop-filter: blur(4px);
-    display: flex;
-    align-items: center;
     justify-content: center;
-    z-index: 3000;
+    padding: 8px 20px;
+    font-family: "Inter", -apple-system, BlinkMacSystemFont, sans-serif !important;
+    font-size: 0.85rem !important;
+    font-weight: 500;
+    color: #ffffff !important;
+    text-decoration: none;
+    
+    /* Elegant Pill & Glass Effects */
+    background: rgba(191, 163, 255, 0.15) !important; /* Soft light purple */
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: 1px solid rgba(221, 204, 255, 0.3) !important; /* Light purple boundary */
+    border-radius: 50px !important;
+    
+    /* Subtle Color Shadow */
+    box-shadow: 0 4px 15px rgba(163, 128, 255, 0.2);
+    transition: all 0.3s ease;
   }
 
-  .glass-modal {
-    background: #1a1625;
-    border: 1px solid rgba(255,255,255,0.1);
-    padding: 2.5rem 2rem;
-    border-radius: 16px;
-    width: 90%;
-    max-width: 360px;
-    text-align: center;
-    color: #fff;
+  /* Hover and Interactive Effects */
+  .nav-horizontal-links a:hover {
+    background: rgba(191, 163, 255, 0.25) !important;
+    border-color: rgba(221, 204, 255, 0.5) !important;
+    box-shadow: 0 4px 20px rgba(163, 128, 255, 0.35);
+    transform: translateY(-1px);
+    color: #ffffff !important;
   }
 
-  .glass-modal input {
-    width: 100%;
-    padding: 12px;
-    margin-bottom: 12px;
-    border: 1px solid rgba(255,255,255,0.2);
-    background: rgba(255,255,255,0.05);
-    border-radius: 8px;
-    color: #fff;
-    box-sizing: border-box;
-  }
 </style>
 
 <!-- Appends reader system access markers cleanly into the page line flow -->
