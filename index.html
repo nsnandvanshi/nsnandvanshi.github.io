@@ -67,8 +67,11 @@ title: Home
 
 <!-- ==================== INTERACTIVE SYSTEM MODALS ==================== -->
 <div id="welcomeModal" class="auth-overlay" style="display:none;">
-  <div class="glass-modal">
-    <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">✨</div>
+  <div class="glass-modal" style="position: relative;">
+    <!-- Close Button added here -->
+    <button onclick="closeModal('welcomeModal')" style="position: absolute; top: 15px; right: 20px; background: none; border: none; color: #fff; font-size: 1.5rem; cursor: pointer;">&times;</button>
+    
+    <div style="font-size: 2.5rem; margin-bottom: 0.5rem; margin-top: 10px;">✨</div>
     <h2>Welcome, Reader!</h2>
     <p style="font-size: 0.9rem; color: #ccc; margin-bottom: 1.5rem;">Join my personal network to track premium release details and use our reader walls.</p>
     <button class="pill-btn" style="width: 100%;" onclick="closeModal('welcomeModal'); openModal('loginModal');">Get Started</button>
