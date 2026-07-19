@@ -83,36 +83,6 @@ img { max-width: 100%; display: block; }
   width: 100%;
 }
 
-<link rel="stylesheet" href="{{ '/assets/main.css' | relative_url }}">
-  <link rel="icon" href="{{ '/assets/images/logo.jpg' | relative_url }}">
-</head>
-<body>
-
-  <!-- FORCE LOGO TO SHRINK BY OVERRIDING CSS SYSTEM STYLES -->
-  <style>
-    header.site-header a.brand img, 
-    .brand img, 
-    .site-header img {
-      max-height: 55px !important;
-      width: auto !important;
-      display: inline-block !important;
-      object-fit: contain !important;
-    }
-    
-    /* Optional: Keeps the navigation layout clean if the row wraps weirdly */
-    .site-header .wrap {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-  </style>
-
-  <header class="site-header">
-    <div class="wrap">
-      <a class="brand" href="{{ '/' | relative_url }}">
-        <img src="{{ '/assets/images/logo.jpg' | relative_url }}" alt="{{ site.author }} logo">
-
-
 /* ---------- Header / Mobile-First Navigation ---------- */
 .site-header {
   padding: 1.2rem 0;
@@ -124,16 +94,17 @@ img { max-width: 100%; display: block; }
   align-items: center;
   justify-content: space-between;
   gap: 1rem;
-  flex-wrap: wrap; /* Flawless wrap for narrow screens */
+  flex-wrap: wrap; 
 }
 
 /* Restricts the massive logo graphic layout dynamically */
-header img, 
-.brand {
-  max-height: 60px !important; 
+header.site-header a.brand img, 
+.brand img, 
+.site-header img {
+  max-height: 55px !important; 
   width: auto !important;
-  object-fit: contain;
-  display: inline-block;
+  object-fit: contain !important;
+  display: inline-block !important;
   vertical-align: middle;
 }
 
@@ -199,7 +170,6 @@ header img,
   max-width: 260px;
   border-radius: 18px;
 }
-/* Re-engineered backdrops: set to completely fixed/static layout positions */
 .portrait-frame::before,
 .portrait-frame::after {
   content: "";
@@ -207,7 +177,7 @@ header img,
   inset: -8px;
   border-radius: 24px;
   background: linear-gradient(135deg, var(--color-accent), var(--color-line), var(--color-accent-soft));
-  animation: none !important; /* Forced halt on spinning */
+  animation: none !important; 
   transform: none !important;
   z-index: 0;
 }
@@ -314,41 +284,36 @@ header img,
   .site-header .wrap { justify-content: center; text-align: center; }
 }
 
-  /* ==================== MAIN NAVIGATION PILL BUTTONS ==================== */
-  .main-nav {
-    display: flex;
-    gap: 12px; /* Adds clean spacing between the pill buttons */
-    align-items: center;
-  }
+/* ==================== MAIN NAVIGATION PILL BUTTONS ==================== */
+.main-nav {
+  display: flex;
+  gap: 12px; 
+  align-items: center;
+}
 
-  .main-nav a {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    padding: 8px 20px;
-    font-family: "Inter", -apple-system, BlinkMacSystemFont, sans-serif !important;
-    font-size: 0.85rem !important;
-    font-weight: 500;
-    color: #ffffff !important;
-    text-decoration: none;
-    
-    /* Elegant Pill & Glass Effects */
-    background: rgba(191, 163, 255, 0.15) !important; /* Soft light purple */
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
-    border: 1px solid rgba(221, 204, 255, 0.3) !important; /* 1px light purple boundary */
-    border-radius: 50px !important;
-    
-    /* Subtle Color Shadow */
-    box-shadow: 0 4px 15px rgba(163, 128, 255, 0.2);
-    transition: all 0.3s ease;
-  }
+.main-nav a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 20px;
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, sans-serif !important;
+  font-size: 0.85rem !important;
+  font-weight: 500;
+  color: #ffffff !important;
+  text-decoration: none;
+  background: rgba(191, 163, 255, 0.15) !important; 
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(221, 204, 255, 0.3) !important; 
+  border-radius: 50px !important;
+  box-shadow: 0 4px 15px rgba(163, 128, 255, 0.2);
+  transition: all 0.3s ease;
+}
 
-  /* Hover and Interactive Effects */
-  .main-nav a:hover {
-    background: rgba(191, 163, 255, 0.25) !important;
-    border-color: rgba(221, 204, 255, 0.5) !important;
-    box-shadow: 0 4px 20px rgba(163, 128, 255, 0.35);
-    transform: translateY(-1px);
-    color: #ffffff !important;
-  }
+.main-nav a:hover {
+  background: rgba(191, 163, 255, 0.25) !important;
+  border-color: rgba(221, 204, 255, 0.5) !important;
+  box-shadow: 0 4px 20px rgba(163, 128, 255, 0.35);
+  transform: translateY(-1px);
+  color: #ffffff !important;
+}
