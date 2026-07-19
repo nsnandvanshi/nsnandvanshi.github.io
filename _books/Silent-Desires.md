@@ -2,7 +2,7 @@
 title: Silent Desires
 description: "An unexpected meeting between two strangers blossoms into a powerful connection built on quiet moments and unspoken emotions."
 cover: /assets/images/Silent-Desires.jpg
-order: 4
+order: 3
 links:
   - store: Google
     url: "https://share.google/example-silent-desires" 
