@@ -1,7 +1,7 @@
 ---
-title: Heartstrings
+title: Heartstring
 description: "A deeply emotional narrative tracking the invisible, fragile bonds that connect human hearts through love and trials."
-cover: /assets/images/Heartstrings.jpg
+cover: /assets/images/Heartstring.jpg
 order: 4
 links:
   - store: Google
